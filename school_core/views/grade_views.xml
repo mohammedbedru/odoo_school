@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- list (List) View -->
+    <record id="view_school_grade_list" model="ir.ui.view">
+        <field name="name">school.grade.list</field>
+        <field name="model">school.grade</field>
+        <field name="arch" type="xml">
+            <!-- 'handle' widget allows drag-and-drop reordering -->
+            <list string="Grades">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="section_ids" widget="many2many_tags"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_school_grade_form" model="ir.ui.view">
+        <field name="name">school.grade.form</field>
+        <field name="model">school.grade</field>
+        <field name="arch" type="xml">
+            <form string="Grade">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Grade 10"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" placeholder="e.g. G10"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Sections" name="sections">
+                            <field name="section_ids">
+                                <list editable="bottom">
+                                    <!-- <field name="sequence" widget="handle"/> -->
+                                    <field name="name"/>
+                                    <!-- Add other school.section fields here if needed -->
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_school_grade_search" model="ir.ui.view">
+        <field name="name">school.grade.search</field>
+        <field name="model">school.grade</field>
+        <field name="arch" type="xml">
+            <search string="Search Grade">
+                <field name="name"/>
+                <field name="code"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_school_grade" model="ir.actions.act_window">
+        <field name="name">Grades</field>
+        <field name="res_model">school.grade</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Define your school grades (e.g., Primary, Secondary, Grade 1...).
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+
+    <menuitem id="menu_school_grade" 
+              name="Grades" 
+              parent="menu_school_config" 
+              action="action_school_grade" 
+              sequence="10"/>
+
+</odoo>

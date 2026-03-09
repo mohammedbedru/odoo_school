@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. THE SERVER ACTION: This sends the email using your template -->
+    <record id="action_send_payment_completed_email" model="ir.actions.server">
+        <field name="name">School Fees: Send Payment Completed Email</field>
+        <field name="model_id" ref="school_fees.model_school_student_fee"/>
+        <field name="state">mail_post</field>
+        <field name="mail_post_method">email</field>
+        <field name="template_id" ref="school_fees.email_template_payment_completed"/>
+    </record>
+
+    <!-- 2. THE AUTOMATION RULE: This triggers the Server Action -->
+    <record id="rule_on_fee_paid_send_email" model="base.automation">
+        <field name="name">School Fees: Send Thank You on Paid</field>
+        <field name="model_id" ref="school_fees.model_school_student_fee"/>
+        <field name="trigger">on_write</field>
+        <!-- Field that triggers the rule (state) -->
+        <field name="trigger_field_ids" eval="[(4, ref('school_fees.field_school_student_fee__state'))]"/>
+        <!-- Before condition: state was NOT paid -->
+        <field name="filter_pre_domain">[('state', '!=', 'paid')]</field>
+        <!-- After condition: state IS now paid -->
+        <field name="filter_domain">[('state', '=', 'paid')]</field>
+        <!-- Link to the Server Action created above -->
+        <field name="action_server_ids" eval="[(6, 0, [ref('action_send_payment_completed_email')])]"/>
+    </record>
+</odoo>

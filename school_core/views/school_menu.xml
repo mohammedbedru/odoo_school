@@ -1,0 +1,13 @@
+<odoo>
+    <menuitem id="menu_school_root" name="School" sequence="10"
+              groups="school_core.group_school_admin,school_core.group_school_registrar,school_core.group_school_teacher"/>
+
+    <menuitem id="menu_school_config" name="Configuration"
+              parent="menu_school_root" sequence="10"/>
+
+    <menuitem id="menu_school_students" name="Students"
+              parent="menu_school_root" sequence="20"/>
+
+    <menuitem id="menu_school_teachers" name="Teachers"
+              parent="menu_school_root" sequence="30"/>
+</odoo>

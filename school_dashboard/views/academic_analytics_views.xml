@@ -1,0 +1,252 @@
+<odoo>
+    <!-- Academic Analytics Form View -->
+    <record id="view_academic_analytics_form" model="ir.ui.view">
+        <field name="name">school.academic.analytics.form</field>
+        <field name="model">school.academic.analytics</field>
+        <field name="arch" type="xml">
+            <form string="Academic Analytics">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="academic_year_id"/>
+                            <field name="term"/>
+                        </group>
+                        <group>
+                            <field name="grade_id"/>
+                            <field name="section_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Performance Metrics">
+                        <group>
+                            <field name="total_students"/>
+                            <field name="students_with_grades"/>
+                            <field name="average_percentage" widget="percentage"/>
+                            <field name="pass_percentage" widget="percentage"/>
+                        </group>
+                        <group>
+                            <field name="grade_a_count"/>
+                            <field name="grade_b_count"/>
+                            <field name="grade_c_count"/>
+                            <field name="grade_d_count"/>
+                            <field name="grade_f_count"/>
+                        </group>
+                    </group>
+
+                    <group string="Attendance Metrics">
+                        <group>
+                            <field name="total_attendance_records"/>
+                            <field name="present_count"/>
+                            <field name="absent_count"/>
+                        </group>
+                        <group>
+                            <field name="late_count"/>
+                            <field name="attendance_rate" widget="percentage"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Academic Analytics List View -->
+    <record id="view_academic_analytics_list" model="ir.ui.view">
+        <field name="name">school.academic.analytics.list</field>
+        <field name="model">school.academic.analytics</field>
+        <field name="arch" type="xml">
+            <list string="Academic Analytics">
+                <field name="academic_year_id"/>
+                <field name="term"/>
+                <field name="grade_id"/>
+                <field name="section_id"/>
+                <field name="total_students"/>
+                <field name="average_percentage" widget="percentage"/>
+                <field name="pass_percentage" widget="percentage"/>
+                <field name="attendance_rate" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Academic Analytics Graph View - Grade Distribution -->
+    <record id="view_academic_analytics_graph_grades" model="ir.ui.view">
+        <field name="name">school.academic.analytics.graph.grades</field>
+        <field name="model">school.academic.analytics</field>
+        <field name="arch" type="xml">
+            <graph string="Grade Distribution" type="pie">
+                <field name="grade_a_count" type="measure"/>
+                <field name="grade_b_count" type="measure"/>
+                <field name="grade_c_count" type="measure"/>
+                <field name="grade_d_count" type="measure"/>
+                <field name="grade_f_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Academic Analytics Graph View - Performance -->
+    <record id="view_academic_analytics_graph_performance" model="ir.ui.view">
+        <field name="name">school.academic.analytics.graph.performance</field>
+        <field name="model">school.academic.analytics</field>
+        <field name="arch" type="xml">
+            <graph string="Academic Performance" type="bar">
+                <field name="grade_id"/>
+                <field name="average_percentage" type="measure"/>
+                <field name="pass_percentage" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Academic Analytics Pivot View -->
+    <record id="view_academic_analytics_pivot" model="ir.ui.view">
+        <field name="name">school.academic.analytics.pivot</field>
+        <field name="model">school.academic.analytics</field>
+        <field name="arch" type="xml">
+            <pivot string="Academic Analytics">
+                <field name="academic_year_id" type="row"/>
+                <field name="term" type="row"/>
+                <field name="grade_id" type="col"/>
+                <field name="average_percentage" type="measure"/>
+                <field name="pass_percentage" type="measure"/>
+                <field name="attendance_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Academic Analytics Action -->
+    <record id="action_academic_analytics" model="ir.actions.act_window">
+        <field name="name">Academic Analytics</field>
+        <field name="res_model">school.academic.analytics</field>
+        <field name="view_mode">list,form,graph,pivot</field>
+    </record>
+
+    <!-- Subject Performance Form View -->
+    <record id="view_subject_performance_form" model="ir.ui.view">
+        <field name="name">school.subject.performance.form</field>
+        <field name="model">school.subject.performance</field>
+        <field name="arch" type="xml">
+            <form string="Subject Performance">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="subject_id"/>
+                            <field name="academic_year_id"/>
+                            <field name="term"/>
+                        </group>
+                        <group>
+                            <field name="grade_id"/>
+                            <field name="total_students"/>
+                        </group>
+                    </group>
+
+                    <group string="Performance Metrics">
+                        <group>
+                            <field name="average_marks"/>
+                            <field name="highest_marks"/>
+                            <field name="lowest_marks"/>
+                        </group>
+                        <group>
+                            <field name="pass_count"/>
+                            <field name="fail_count"/>
+                            <field name="pass_percentage" widget="percentage"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Subject Performance List View -->
+    <record id="view_subject_performance_list" model="ir.ui.view">
+        <field name="name">school.subject.performance.list</field>
+        <field name="model">school.subject.performance</field>
+        <field name="arch" type="xml">
+            <list string="Subject Performance">
+                <field name="subject_id"/>
+                <field name="academic_year_id"/>
+                <field name="term"/>
+                <field name="grade_id"/>
+                <field name="total_students"/>
+                <field name="average_marks"/>
+                <field name="pass_percentage" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Subject Performance Graph View -->
+    <record id="view_subject_performance_graph" model="ir.ui.view">
+        <field name="name">school.subject.performance.graph</field>
+        <field name="model">school.subject.performance</field>
+        <field name="arch" type="xml">
+            <graph string="Subject Performance" type="bar">
+                <field name="subject_id"/>
+                <field name="average_marks" type="measure"/>
+                <field name="pass_percentage" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Subject Performance Action -->
+    <record id="action_subject_performance" model="ir.actions.act_window">
+        <field name="name">Subject Performance</field>
+        <field name="res_model">school.subject.performance</field>
+        <field name="view_mode">list,form,graph</field>
+    </record>
+
+    <!-- Attendance Analytics List View -->
+    <record id="view_attendance_analytics_list" model="ir.ui.view">
+        <field name="name">school.attendance.analytics.list</field>
+        <field name="model">school.attendance.analytics</field>
+        <field name="arch" type="xml">
+            <list string="Attendance Analytics" create="false" edit="false" delete="false">
+                <field name="attendance_date"/>
+                <field name="grade_id"/>
+                <field name="section_id"/>
+                <field name="total_students"/>
+                <field name="present_count"/>
+                <field name="absent_count"/>
+                <field name="late_count"/>
+                <field name="attendance_rate" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Attendance Analytics Graph View -->
+    <record id="view_attendance_analytics_graph" model="ir.ui.view">
+        <field name="name">school.attendance.analytics.graph</field>
+        <field name="model">school.attendance.analytics</field>
+        <field name="arch" type="xml">
+            <graph string="Attendance Trend" type="line">
+                <field name="attendance_date" interval="day"/>
+                <field name="attendance_rate" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Attendance Analytics Pivot View -->
+    <record id="view_attendance_analytics_pivot" model="ir.ui.view">
+        <field name="name">school.attendance.analytics.pivot</field>
+        <field name="model">school.attendance.analytics</field>
+        <field name="arch" type="xml">
+            <pivot string="Attendance Analytics">
+                <field name="grade_id" type="row"/>
+                <field name="section_id" type="row"/>
+                <field name="attendance_date" interval="month" type="col"/>
+                <field name="attendance_rate" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Attendance Analytics Action -->
+    <record id="action_attendance_analytics" model="ir.actions.act_window">
+        <field name="name">Attendance Analytics</field>
+        <field name="res_model">school.attendance.analytics</field>
+        <field name="view_mode">graph,pivot,list</field>
+    </record>
+</odoo>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Timetable list (List) View -->
+    <record id="view_school_timetable_list" model="ir.ui.view">
+        <field name="name">school.timetable.list</field>
+        <field name="model">school.timetable</field>
+        <field name="arch" type="xml">
+            <list string="Timetables" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'">
+                <field name="name"/>
+                <field name="section_id"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Timetable Form View -->
+    <record id="view_school_timetable_form" model="ir.ui.view">
+        <field name="name">school.timetable.form</field>
+        <field name="model">school.timetable</field>
+        <field name="arch" type="xml">
+            <form string="Timetable">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_set_draft" string="Reset to Draft" type="object" 
+                            invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. First Term Timetable" readonly="state == 'confirmed'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="section_id" options="{'no_create': True}" readonly="state == 'confirmed'"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="date_start" readonly="state == 'confirmed'"/>
+                            <field name="date_end" readonly="state == 'confirmed'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Schedule Lines" name="lines">
+                            <field name="line_ids" readonly="state == 'confirmed'">
+                                <list editable="bottom">
+                                    <field name="day_of_week"/>
+                                    <field name="period"/>
+                                    <field name="subject_id" options="{'no_create': True}"/>
+                                    <field name="teacher_id" options="{'no_create': True}"/>
+                                    <field name="room"/>
+                                    <field name="start_time" widget="float_time"/>
+                                    <field name="end_time" widget="float_time"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- Chatter -->
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Timetable Search View -->
+    <record id="view_school_timetable_search" model="ir.ui.view">
+        <field name="name">school.timetable.search</field>
+        <field name="model">school.timetable</field>
+        <field name="arch" type="xml">
+            <search string="Search Timetable">
+                <field name="name"/>
+                <field name="section_id"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Section" name="group_by_section" context="{'group_by': 'section_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Timetable Action -->
+    <record id="action_school_timetable" model="ir.actions.act_window">
+        <field name="name">Timetables</field>
+        <field name="res_model">school.timetable</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new schedule for a section.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_school_timetable" 
+              name="Timetables" 
+              parent="menu_school_academics" 
+              action="action_school_timetable" 
+              sequence="20"/>
+
+</odoo>

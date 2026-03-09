@@ -1,0 +1,37 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_school_timetable_admin,school.timetable admin,model_school_timetable,school_core.group_school_admin,1,1,1,1
+access_school_timetable_registrar,school.timetable registrar,model_school_timetable,school_core.group_school_registrar,1,1,1,0
+access_school_timetable_teacher,school.timetable teacher,model_school_timetable,school_core.group_school_teacher,1,0,0,0
+
+access_school_timetable_line_admin,school.timetable.line admin,model_school_timetable_line,school_core.group_school_admin,1,1,1,1
+access_school_timetable_line_registrar,school.timetable.line registrar,model_school_timetable_line,school_core.group_school_registrar,1,1,1,0
+
+access_school_attendance_admin,school.attendance admin,model_school_attendance,school_core.group_school_admin,1,1,1,1
+access_school_attendance_registrar,school.attendance registrar,model_school_attendance,school_core.group_school_registrar,1,1,1,0
+access_school_attendance_teacher,school.attendance teacher,model_school_attendance,school_core.group_school_teacher,1,1,1,0
+
+access_school_attendance_line_admin,school.attendance.line admin,model_school_attendance_line,school_core.group_school_admin,1,1,1,1
+access_school_attendance_line_registrar,school.attendance.line registrar,model_school_attendance_line,school_core.group_school_registrar,1,1,1,0
+access_school_attendance_line_teacher,school.attendance.line teacher,model_school_attendance_line,school_core.group_school_teacher,1,1,1,0
+
+access_school_exam_admin,school.exam admin,model_school_exam,school_core.group_school_admin,1,1,1,1
+access_school_exam_registrar,school.exam registrar,model_school_exam,school_core.group_school_registrar,1,1,1,0
+access_school_exam_teacher,school.exam teacher,model_school_exam,school_core.group_school_teacher,1,1,1,0
+
+access_school_exam_mark_admin,school.exam.mark admin,model_school_exam_mark,school_core.group_school_admin,1,1,1,1
+access_school_exam_mark_registrar,school.exam.mark registrar,model_school_exam_mark,school_core.group_school_registrar,1,1,1,0
+access_school_exam_mark_teacher,school.exam.mark teacher,model_school_exam_mark,school_core.group_school_teacher,1,1,1,0
+
+access_school_report_card_admin,school.report.card admin,model_school_report_card,school_core.group_school_admin,1,1,1,1
+access_school_report_card_registrar,school.report.card registrar,model_school_report_card,school_core.group_school_registrar,1,1,1,0
+access_school_report_card_teacher,school.report.card teacher,model_school_report_card,school_core.group_school_teacher,1,1,1,0
+
+access_school_report_card_line_admin,school.report.card.line admin,model_school_report_card_line,school_core.group_school_admin,1,1,1,1
+access_school_report_card_line_registrar,school.report.card.line registrar,model_school_report_card_line,school_core.group_school_registrar,1,1,1,0
+access_school_report_card_line_teacher,school.report.card.line teacher,model_school_report_card_line,school_core.group_school_teacher,1,1,1,0
+
+access_attendance_sheet_wizard,attendance.sheet.wizard,model_school_attendance_sheet_wizard,school_core.group_school_teacher,1,1,1,1
+access_promotion_wizard,promotion.wizard,model_school_promotion_wizard,school_core.group_school_admin,1,1,1,1
+access_bulk_grade_report_wizard_admin,bulk.grade.report.wizard admin,model_school_bulk_grade_report_wizard,school_core.group_school_admin,1,1,1,1
+access_bulk_grade_report_wizard_registrar,bulk.grade.report.wizard registrar,model_school_bulk_grade_report_wizard,school_core.group_school_registrar,1,1,1,1
+access_bulk_grade_report_wizard_teacher,bulk.grade.report.wizard teacher,model_school_bulk_grade_report_wizard,school_core.group_school_teacher,1,1,1,1

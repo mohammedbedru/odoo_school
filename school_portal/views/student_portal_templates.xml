@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Student Profile -->
+    <template id="student_profile" name="Student Profile">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-user"/> My Profile</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="profile_card">
+                    <div class="profile_header">
+                        <div class="profile_avatar">
+                            <t t-if="student.photo">
+                                <img t-att-src="'data:image/png;base64,%s' % student.photo.decode('utf-8')" alt="Student Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"/>
+                            </t>
+                            <t t-else="">
+                                <t t-esc="student.name[:1]"/>
+                            </t>
+                        </div>
+                        <div class="profile_info">
+                            <h2><t t-esc="student.name"/></h2>
+                            <p>Student Code: <t t-esc="student.student_code"/></p>
+                        </div>
+                    </div>
+
+                    <div class="profile_details">
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Grade / Section</div>
+                            <div class="profile_detail_value">
+                                <t t-esc="student.grade_id.name"/> - <t t-esc="student.section_id.name"/>
+                            </div>
+                        </div>
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Status</div>
+                            <div class="profile_detail_value">
+                                <span t-att-class="'badge badge-' + ('success' if student.status in ['enrolled', 'active'] else 'secondary')">
+                                    <t t-esc="student.status.title()"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Enrollment Date</div>
+                            <div class="profile_detail_value"><t t-esc="student.admission_date"/></div>
+                        </div>
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Gender</div>
+                            <div class="profile_detail_value"><t t-esc="student.gender.title()"/></div>
+                        </div>
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Date of Birth</div>
+                            <div class="profile_detail_value"><t t-esc="student.dob"/></div>
+                        </div>
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Age</div>
+                            <div class="profile_detail_value"><t t-esc="student.age"/> years</div>
+                        </div>
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Email</div>
+                            <div class="profile_detail_value"><t t-esc="student.email or 'N/A'"/></div>
+                        </div>
+                        <div class="profile_detail_item">
+                            <div class="profile_detail_label">Phone</div>
+                            <div class="profile_detail_value"><t t-esc="student.phone or 'N/A'"/></div>
+                        </div>
+                    </div>
+
+                    <t t-if="student.parent_ids">
+                        <h3 class="mt-4 mb-3">Parent/Guardian Information</h3>
+                        <div class="profile_details">
+                            <t t-foreach="student.parent_ids" t-as="parent">
+                                <div class="profile_detail_item">
+                                    <div class="profile_detail_label"><t t-esc="parent.relation.title()"/></div>
+                                    <div class="profile_detail_value">
+                                        <div><t t-esc="parent.name"/></div>
+                                        <small class="text-muted"><t t-esc="parent.phone or ''"/></small>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+
+                <div class="text-center mt-4">
+                    <a href="/my/student/dashboard" class="btn-portal">
+                        <i class="fa fa-arrow-left"/> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Student Dashboard -->
+    <template id="student_dashboard" name="Student Dashboard">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-tachometer"/> Academic Dashboard</h1>
+                    <p>Welcome back, <t t-esc="student.name"/>!</p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dashboard_cards">
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-star"/></div>
+                        <div class="dashboard_card_value"><t t-esc="'%.2f' % gpa"/>%</div>
+                        <div class="dashboard_card_label">Current GPA</div>
+                    </div>
+                    <div class="dashboard_card text-center" t-if="rank">
+                        <div class="dashboard_card_icon"><i class="fa fa-trophy"/></div>
+                        <div class="dashboard_card_value"><t t-esc="rank"/>/<t t-esc="total_students"/></div>
+                        <div class="dashboard_card_label">Class Rank</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-check-circle"/></div>
+                        <div class="dashboard_card_value"><t t-esc="'%.1f' % attendance_percentage"/>%</div>
+                        <div class="dashboard_card_label">Attendance</div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="profile_card">
+                            <h3 class="mb-3"><i class="fa fa-calendar"/> Upcoming Exams</h3>
+                            <t t-if="upcoming_exams">
+                                <div class="list-group">
+                                    <t t-foreach="upcoming_exams" t-as="exam">
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between">
+                                                <strong><t t-esc="exam.name"/></strong>
+                                                <span class="badge badge-info"><t t-esc="exam.date"/></span>
+                                            </div>
+                                            <small class="text-muted"><t t-esc="exam.subject_id.name"/></small>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="empty_state">
+                                    <p>No upcoming exams</p>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="profile_card">
+                            <h3 class="mb-3"><i class="fa fa-link"/> Quick Links</h3>
+                            <div class="list-group">
+                                <a href="/my/student/timetable" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-calendar"/> View Timetable
+                                </a>
+                                <a href="/my/student/attendance" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-check-circle"/> View Attendance
+                                </a>
+                                <a href="/my/student/marks" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-star"/> View Exam Marks
+                                </a>
+                                <a href="/my/student/report-cards" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-file-text"/> View Report Cards
+                                </a>
+                                <a href="/my/student/fees" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-money"/> View Fees
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Student Timetable -->
+    <template id="student_timetable" name="Student Timetable">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-calendar"/> My Timetable</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <t t-if="timetable">
+                    <div class="timetable_container">
+                        <table class="timetable">
+                            <thead>
+                                <tr>
+                                    <th>Period</th>
+                                    <th>Monday</th>
+                                    <th>Tuesday</th>
+                                    <th>Wednesday</th>
+                                    <th>Thursday</th>
+                                    <th>Friday</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="time_slots" t-as="slot">
+                                    <tr>
+                                        <td><strong>Period <t t-esc="slot"/></strong></td>
+                                        <t t-foreach="days[:5]" t-as="day">
+                                            <t t-set="line" t-value="timetable.line_ids.filtered(lambda l: l.day_of_week == day[0] and l.period == slot)[:1]"/>
+                                            <td>
+                                                <t t-if="line">
+                                                    <div class="timetable_slot">
+                                                        <div class="timetable_subject"><t t-esc="line.subject_id.name"/></div>
+                                                        <div class="timetable_teacher"><t t-esc="line.teacher_id.name"/></div>
+                                                        <div class="timetable_room" t-if="line.room"><t t-esc="line.room"/></div>
+                                                        <t t-if="line.start_time">
+                                                            <div class="timetable_time">
+                                                                <t t-esc="'%02d:%02d' % (int(line.start_time), int((line.start_time % 1) * 60))"/> - 
+                                                                <t t-esc="'%02d:%02d' % (int(line.end_time), int((line.end_time % 1) * 60))"/>
+                                                            </div>
+                                                        </t>
+                                                    </div>
+                                                </t>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="empty_state">
+                        <i class="fa fa-calendar"/>
+                        <h3>No Timetable Available</h3>
+                        <p>Your timetable has not been published yet.</p>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- Student Attendance -->
+    <template id="student_attendance" name="Student Attendance">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-check-circle"/> My Attendance</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dashboard_cards mb-4">
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-check text-success"/></div>
+                        <div class="dashboard_card_value"><t t-esc="present"/></div>
+                        <div class="dashboard_card_label">Present</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-times text-danger"/></div>
+                        <div class="dashboard_card_value"><t t-esc="absent"/></div>
+                        <div class="dashboard_card_label">Absent</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-clock-o text-warning"/></div>
+                        <div class="dashboard_card_value"><t t-esc="late"/></div>
+                        <div class="dashboard_card_label">Late</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-file-text text-info"/></div>
+                        <div class="dashboard_card_value"><t t-esc="excused"/></div>
+                        <div class="dashboard_card_label">Excused</div>
+                    </div>
+                </div>
+
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="attendance_lines" t-as="line">
+                                <tr>
+                                    <td><t t-esc="line.attendance_id.date"/></td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if line.status == 'present' else 'danger' if line.status == 'absent' else 'warning' if line.status == 'late' else 'info')">
+                                            <t t-esc="line.status.title()"/>
+                                        </span>
+                                    </td>
+                                    <td><t t-esc="line.note or '-'"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Student Marks -->
+    <template id="student_marks" name="Student Exam Marks">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-star"/> My Exam Marks</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Exam</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Mark</th>
+                                <th>Max Mark</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="exam_marks" t-as="mark">
+                                <tr>
+                                    <td><t t-esc="mark.exam_id.name"/></td>
+                                    <td><t t-esc="mark.exam_id.subject_id.name"/></td>
+                                    <td><t t-esc="mark.exam_id.date"/></td>
+                                    <td><strong><t t-esc="'%.2f' % mark.mark"/></strong></td>
+                                    <td><t t-esc="'%.2f' % mark.exam_id.max_mark"/></td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if mark.grade in ['A', 'B'] else 'warning' if mark.grade == 'C' else 'danger')">
+                                            <t t-esc="mark.grade"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if mark.mark >= (mark.exam_id.max_mark * 0.5) else 'danger')">
+                                            <t t-esc="'Pass' if mark.mark >= (mark.exam_id.max_mark * 0.5) else 'Fail'"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Student Report Cards List -->
+    <template id="student_report_cards" name="Student Report Cards">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-file-text"/> My Report Cards</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Academic Year</th>
+                                <th>Term</th>
+                                <th>Average</th>
+                                <th>Total Marks</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="report_cards" t-as="report">
+                                <tr>
+                                    <td><t t-esc="report.academic_year_id.name"/></td>
+                                    <td><t t-esc="dict(report._fields['term'].selection).get(report.term)"/></td>
+                                    <td><strong><t t-esc="'%.2f' % report.average"/>%</strong></td>
+                                    <td><t t-esc="'%.2f' % report.total"/></td>
+                                    <td>
+                                        <a t-attf-href="/my/student/report-card/#{report.id}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-eye"/> View
+                                        </a>
+                                        <a t-attf-href="/my/student/report-card/#{report.id}/pdf" class="btn btn-sm btn-success">
+                                            <i class="fa fa-download"/> PDF
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Student Report Card Detail -->
+    <template id="student_report_card_detail" name="Student Report Card Detail">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-file-text"/> Report Card</h1>
+                    <p><t t-esc="report_card.name"/></p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="profile_card">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h4>Student Information</h4>
+                            <p><strong>Name:</strong> <t t-esc="student.name"/></p>
+                            <p><strong>Code:</strong> <t t-esc="student.student_code"/></p>
+                            <p><strong>Grade:</strong> <t t-esc="student.grade_id.name"/> - <t t-esc="student.section_id.name"/></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Report Information</h4>
+                            <p><strong>Academic Year:</strong> <t t-esc="report_card.academic_year_id.name"/></p>
+                            <p><strong>Term:</strong> <t t-esc="dict(report_card._fields['term'].selection).get(report_card.term)"/></p>
+                            <p><strong>Average:</strong> <t t-esc="'%.2f' % report_card.average"/>%</p>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3">Subject Grades</h4>
+                    <div class="portal_table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Quiz</th>
+                                    <th>Midterm</th>
+                                    <th>Final</th>
+                                    <th>Assignment</th>
+                                    <th>Total</th>
+                                    <th>Percentage</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="report_card.line_ids" t-as="line">
+                                    <tr>
+                                        <td><strong><t t-esc="line.subject_id.name"/></strong></td>
+                                        <td>
+                                            <t t-if="line.quiz_mark > 0" t-esc="'%.0f/%.0f' % (line.quiz_mark, line.quiz_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.mid_mark > 0" t-esc="'%.0f/%.0f' % (line.mid_mark, line.mid_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.final_mark > 0" t-esc="'%.0f/%.0f' % (line.final_mark, line.final_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.assignment_mark > 0" t-esc="'%.0f/%.0f' % (line.assignment_mark, line.assignment_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td><strong><t t-esc="'%.0f/%.0f' % (line.total_mark, line.total_max)"/></strong></td>
+                                        <td><t t-esc="'%.2f' % line.percentage"/>%</td>
+                                        <td>
+                                            <span t-att-class="'badge badge-' + ('success' if line.grade in ['A', 'B'] else 'warning' if line.grade == 'C' else 'danger')">
+                                                <t t-esc="line.grade"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a t-attf-href="/my/student/report-card/#{report_card.id}/pdf" class="btn-portal">
+                            <i class="fa fa-download"/> Download PDF
+                        </a>
+                        <a href="/my/student/report-cards" class="btn-portal-outline ml-2">
+                            <i class="fa fa-arrow-left"/> Back to List
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Student Fees -->
+    <template id="student_fees" name="Student Fees">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-money"/> My Fees</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="dashboard_cards mb-4">
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-money"/></div>
+                        <div class="dashboard_card_value">$<t t-esc="'%.2f' % total_amount"/></div>
+                        <div class="dashboard_card_label">Total Amount</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-check text-success"/></div>
+                        <div class="dashboard_card_value">$<t t-esc="'%.2f' % total_paid"/></div>
+                        <div class="dashboard_card_label">Paid</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-exclamation text-danger"/></div>
+                        <div class="dashboard_card_value">$<t t-esc="'%.2f' % total_due"/></div>
+                        <div class="dashboard_card_label">Due</div>
+                    </div>
+                </div>
+
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Due Date</th>
+                                <th>Amount</th>
+                                <th>Paid</th>
+                                <th>Due</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="fees" t-as="fee">
+                                <tr>
+                                    <td><t t-esc="fee.structure_id.name"/></td>
+                                    <td><t t-esc="fee.due_date"/></td>
+                                    <td>$<t t-esc="'%.2f' % fee.amount_total"/></td>
+                                    <td>$<t t-esc="'%.2f' % fee.amount_paid"/></td>
+                                    <td>$<t t-esc="'%.2f' % fee.amount_due"/></td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if fee.payment_state == 'paid' else 'warning' if fee.payment_state == 'partial' else 'danger')">
+                                            <t t-esc="fee.payment_state.replace('_', ' ').title()"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a t-if="fee.invoice_id" t-attf-href="/my/student/fee/#{fee.id}/invoice" class="btn btn-sm btn-success">
+                                            <i class="fa fa-download"/> Invoice
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

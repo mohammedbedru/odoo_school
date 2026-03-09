@@ -1,0 +1,53 @@
+<odoo>
+    <!-- Late Fee Product -->
+    <record id="product_late_fee" model="product.product">
+        <field name="name">Late Fee</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_all"/>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+        <field name="invoice_policy">order</field>
+        <field name="description">Late payment penalty fee</field>
+    </record>
+
+    <!-- Discount Product -->
+    <record id="product_discount" model="product.product">
+        <field name="name">Fee Discount</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_all"/>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+        <field name="invoice_policy">order</field>
+        <field name="description">Manual discount applied to student fee</field>
+    </record>
+
+    <!-- Scholarship Product -->
+    <record id="product_scholarship" model="product.product">
+        <field name="name">Scholarship Discount</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_all"/>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+        <field name="invoice_policy">order</field>
+        <field name="description">Scholarship discount applied to student fee</field>
+    </record>
+
+    <!-- Sibling Discount Product -->
+    <record id="product_sibling_discount" model="product.product">
+        <field name="name">Sibling Discount</field>
+        <field name="type">service</field>
+        <field name="list_price">0.0</field>
+        <field name="standard_price">0.0</field>
+        <field name="categ_id" ref="product.product_category_all"/>
+        <field name="sale_ok">True</field>
+        <field name="purchase_ok">False</field>
+        <field name="invoice_policy">order</field>
+        <field name="description">Automatic discount for students with siblings enrolled</field>
+    </record>
+</odoo>

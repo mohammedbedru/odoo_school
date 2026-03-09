@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Parent list View -->
+    <record id="view_school_parent_list" model="ir.ui.view">
+        <field name="name">school.parent.list</field>
+        <field name="model">school.parent</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="relation"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="student_count"/>
+                <!-- <field name="user_id"/> -->
+            </list>
+        </field>
+    </record>
+
+    <!-- Parent Form View -->
+    <record id="view_school_parent_form" model="ir.ui.view">
+        <field name="name">school.parent.form</field>
+        <field name="model">school.parent</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_view_students" type="object" string="View Children" class="oe_highlight" invisible="student_count == 0"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_students" type="object" class="oe_stat_button" icon="fa-users">
+                            <field name="student_count" widget="statinfo" string="Children"/>
+                        </button>
+                    </div>
+                    
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="relation"/>
+                            <field name="gender"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="mobile"/>
+                            <field name="is_emergency_contact"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Employment Information">
+                        <group>
+                            <field name="occupation"/>
+                            <field name="company_name"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Address">
+                        <field name="address" nolabel="1"/>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Children" name="children">
+                            <field name="student_ids" widget="many2many">
+                                <list>
+                                    <field name="student_code"/>
+                                    <field name="name"/>
+                                    <field name="grade_id"/>
+                                    <field name="section_id"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Portal Access" name="portal">
+                            <group>
+                                <field name="user_id"/>
+                            </group>
+                            <div class="alert alert-info" role="alert" invisible="user_id">
+                                <p>This parent doesn't have portal access yet.</p>
+                                <p>Install the <strong>School Portal</strong> module to grant portal access.</p>
+                            </div>
+                            <div class="alert alert-success" role="alert" invisible="not user_id">
+                                <p><i class="fa fa-check-circle"/> Portal access granted</p>
+                                <p>Login: <field name="user_id" readonly="1" options="{'no_open': True}"/></p>
+                            </div>
+                        </page>
+                        
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Additional notes about this parent/guardian..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Parent Search View -->
+    <record id="view_school_parent_search" model="ir.ui.view">
+        <field name="name">school.parent.search</field>
+        <field name="model">school.parent</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="student_ids"/>
+                
+                <filter string="Fathers" name="fathers" domain="[('relation', '=', 'father')]"/>
+                <filter string="Mothers" name="mothers" domain="[('relation', '=', 'mother')]"/>
+                <filter string="Guardians" name="guardians" domain="[('relation', '=', 'guardian')]"/>
+                
+                <separator/>
+                <filter string="Emergency Contacts" name="emergency" domain="[('is_emergency_contact', '=', True)]"/>
+                <filter string="With Portal Access" name="portal_access" domain="[('user_id', '!=', False)]"/>
+                
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Relation" name="group_relation" context="{'group_by': 'relation'}"/>
+                    <filter string="Gender" name="group_gender" context="{'group_by': 'gender'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Parent Action -->
+    <record id="action_school_parent" model="ir.actions.act_window">
+        <field name="name">Parents/Guardians</field>
+        <field name="res_model">school.parent</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new parent/guardian record
+            </p>
+            <p>
+                Parents and guardians can be linked to students and granted portal access.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem
+        id="menu_school_parent"
+        name="Parents/Guardians"
+        parent="school_core.menu_school_root"
+        action="action_school_parent"
+        sequence="15"/>
+</odoo>

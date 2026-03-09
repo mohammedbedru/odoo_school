@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- list (List) View -->
+    <record id="view_school_subject_list" model="ir.ui.view">
+        <field name="name">school.subject.list</field>
+        <field name="model">school.subject</field>
+        <field name="arch" type="xml">
+            <list string="Subjects" editable="bottom">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="grade_id"/>
+                <field name="credit" sum="Total Credits"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_school_subject_form" model="ir.ui.view">
+        <field name="name">school.subject.form</field>
+        <field name="model">school.subject</field>
+        <field name="arch" type="xml">
+            <form string="Subject">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Mathematics"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" placeholder="e.g. MATH101"/>
+                            <field name="grade_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="credit"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_school_subject_search" model="ir.ui.view">
+        <field name="name">school.subject.search</field>
+        <field name="model">school.subject</field>
+        <field name="arch" type="xml">
+            <search string="Search Subjects">
+                <field name="name" filter_domain="['|', ('name', 'ilike', self), ('code', 'ilike', self)]"/>
+                <field name="code"/>
+                <field name="grade_id"/>
+                <group expand="0" string="Group By">
+                    <filter string="Grade" name="group_by_grade" context="{'group_by': 'grade_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_school_subject" model="ir.actions.act_window">
+        <field name="name">Subjects</field>
+        <field name="res_model">school.subject</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_by_grade': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new subject.
+            </p>
+            <p>
+                Define subjects like Physics, History, or Arts and assign them to specific grades.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_school_subject" 
+              name="Subjects" 
+              parent="menu_school_config" 
+              action="action_school_subject" 
+              sequence="30"/>
+
+</odoo>

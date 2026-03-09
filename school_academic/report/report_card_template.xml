@@ -1,0 +1,194 @@
+<odoo>
+    <template id="report_report_card_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Helvetica', sans-serif; color: #333;">
+                        
+                        <!-- Header: Official Title -->
+                        <div class="text-center mb-4">
+                            <h2 style="font-weight: bold; text-transform: uppercase; color: #1a4d80; margin-bottom: 5px;">
+                                Academic Progress Report
+                            </h2>
+                            <h5 class="text-muted">
+                                <span t-field="o.academic_year_id.name"/> — <span t-field="o.term"/>
+                            </h5>
+                        </div>
+
+                        <!-- Student Info Card -->
+                        <div class="row mb-4 p-3" style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px;">
+                            <div class="col-6">
+                                <div class="row mb-2">
+                                    <div class="col-4"><strong>Student:</strong></div>
+                                    <div class="col-8"><span t-field="o.student_id.name" style="font-size: 1.2em; font-weight: bold;"/></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4"><strong>Student ID:</strong></div>
+                                    <div class="col-8"><span t-field="o.student_id.student_code"/></div>
+                                </div>
+                            </div>
+                            <div class="col-6 border-start">
+                                <div class="row mb-2 ps-3">
+                                    <div class="col-5"><strong>Grade/Section:</strong></div>
+                                    <div class="col-7"><span t-field="o.section_id.full_name"/></div>
+                                </div>
+                                <div class="row ps-3">
+                                    <div class="col-5"><strong>Status:</strong></div>
+                                    <div class="col-7">
+                                        <span t-attf-class="badge rounded-pill #{'bg-success' if o.state == 'published' else 'bg-warning'} text-white">
+                                            <span t-field="o.state"/>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Marks Table -->
+                        <h4 class="mb-3" style="color: #1a4d80; border-bottom: 2px solid #1a4d80; padding-bottom: 5px;">
+                            Subject Performance
+                        </h4>
+                        
+                        <table class="table table-bordered o_main_table" style="font-size: 0.95em;">
+                            <thead class="text-center" style="background-color: #1a4d80;">
+                                <tr>
+                                    <th style="width: 20%; vertical-align: middle; color: white !important; background-color: #1a4d80;">Subject</th>
+                                    <th style="width: 15%; vertical-align: middle; color: white !important; background-color: #1a4d80;">Instructor</th>
+                                    <th style="width: 10%; vertical-align: middle; color: white !important; background-color: #1a4d80;">Quiz</th>
+                                    <th style="width: 10%; vertical-align: middle; color: white !important; background-color: #1a4d80;">Midterm</th>
+                                    <th style="width: 10%; vertical-align: middle; color: white !important; background-color: #1a4d80;">Final</th>
+                                    <th style="width: 10%; vertical-align: middle; color: white !important; background-color: #1a4d80;">Assignment</th>
+                                    <th style="width: 10%; vertical-align: middle; color: white !important; background-color: #0d3a5f;">Total</th>
+                                    <th style="width: 8%; vertical-align: middle; color: white !important; background-color: #0d3a5f;">%</th>
+                                    <th style="width: 7%; vertical-align: middle; color: white !important; background-color: #0d3a5f;">Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.line_ids" t-as="line">
+                                    <tr>
+                                        <td style="padding: 8px;">
+                                            <span t-field="line.subject_id.name" style="font-weight: 500;"/>
+                                        </td>
+                                        <td style="padding: 8px;">
+                                            <span t-field="line.teacher_id.name"/>
+                                        </td>
+                                        <td class="text-center" style="padding: 8px;">
+                                            <t t-if="line.quiz_mark > 0">
+                                                <span t-esc="'%.1f' % line.quiz_mark"/>/<span t-esc="'%.0f' % line.quiz_max"/>
+                                            </t>
+                                            <span t-else="" class="text-muted">-</span>
+                                        </td>
+                                        <td class="text-center" style="padding: 8px;">
+                                            <t t-if="line.mid_mark > 0">
+                                                <span t-esc="'%.1f' % line.mid_mark"/>/<span t-esc="'%.0f' % line.mid_max"/>
+                                            </t>
+                                            <span t-else="" class="text-muted">-</span>
+                                        </td>
+                                        <td class="text-center" style="padding: 8px;">
+                                            <t t-if="line.final_mark > 0">
+                                                <span t-esc="'%.1f' % line.final_mark"/>/<span t-esc="'%.0f' % line.final_max"/>
+                                            </t>
+                                            <span t-else="" class="text-muted">-</span>
+                                        </td>
+                                        <td class="text-center" style="padding: 8px;">
+                                            <t t-if="line.assignment_mark > 0">
+                                                <span t-esc="'%.1f' % line.assignment_mark"/>/<span t-esc="'%.0f' % line.assignment_max"/>
+                                            </t>
+                                            <span t-else="" class="text-muted">-</span>
+                                        </td>
+                                        <td class="text-center" style="padding: 8px; font-weight: bold; background-color: #f0f8ff;">
+                                            <span t-esc="'%.1f' % line.total_mark"/>/<span t-esc="'%.0f' % line.total_max"/>
+                                        </td>
+                                        <td class="text-center" style="padding: 8px; font-weight: bold; background-color: #f0f8ff;">
+                                            <span t-esc="'%.1f' % line.percentage"/>%
+                                        </td>
+                                        <td class="text-center" style="padding: 8px; font-weight: bold; font-size: 1.1em; background-color: #f0f8ff;">
+                                            <span t-field="line.grade" t-att-class="'text-danger' if line.grade == 'F' else ('text-success' if line.grade in ['A', 'B'] else 'text-warning')"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot style="background-color: #e8f4f8; font-weight: bold;">
+                                <tr>
+                                    <td colspan="6" class="text-end" style="padding: 10px;">
+                                        <strong>Overall Total:</strong>
+                                    </td>
+                                    <td class="text-center" style="padding: 10px; font-size: 1.1em;">
+                                        <span t-esc="'%.1f' % o.total"/>
+                                    </td>
+                                    <td class="text-center" style="padding: 10px; font-size: 1.1em;">
+                                        <span t-esc="'%.1f' % o.average"/>%
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!-- Performance Summary -->
+                        <div class="row mt-4">
+                            <div class="col-7">
+                                <div class="p-3" style="background-color: #fff9e6; border-left: 4px solid #ffc107;">
+                                    <strong>Grading Scale:</strong> 
+                                    <span class="ms-2">A (90-100%)</span> | 
+                                    <span>B (75-89%)</span> | 
+                                    <span>C (60-74%)</span> | 
+                                    <span>D (50-59%)</span> | 
+                                    <span class="text-danger">F (Below 50%)</span>
+                                </div>
+                            </div>
+                            <div class="col-5">
+                                <table class="table table-sm border mb-0">
+                                    <tr style="background-color: #eef4fb;">
+                                        <td class="p-3" style="font-size: 1.1em;"><strong>Overall Average:</strong></td>
+                                        <td class="text-end p-3" style="font-weight: bold; color: #1a4d80; font-size: 1.2em;">
+                                            <span t-esc="'%.2f' % o.average"/>%
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Remarks Section -->
+                        <div class="mt-4 p-3" style="border: 1px solid #dee2e6; border-radius: 5px; min-height: 80px;">
+                            <strong>Teacher's Comments:</strong>
+                            <div class="mt-2" style="min-height: 50px;">
+                                <!-- Space for handwritten or typed comments -->
+                            </div>
+                        </div>
+
+                        <!-- Signatures -->
+                        <div class="row mt-5 pt-4">
+                            <div class="col-4 text-center">
+                                <div style="border-top: 2px solid #333; margin-top: 50px; padding-top: 8px;">
+                                    <strong>Class Teacher</strong><br/>
+                                    <small class="text-muted">Signature &amp; Date</small>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div style="border-top: 2px solid #333; margin-top: 50px; padding-top: 8px;">
+                                    <strong>Parent/Guardian</strong><br/>
+                                    <small class="text-muted">Signature &amp; Date</small>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div style="border-top: 2px solid #333; margin-top: 50px; padding-top: 8px;">
+                                    <strong>Principal</strong><br/>
+                                    <small class="text-muted">Signature &amp; Date</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer -->
+                        <div class="text-center small text-muted border-top mt-4 pt-3">
+                            <p class="mb-1">
+                                This is an official academic report card issued by <strong t-esc="res_company.name"/>
+                            </p>
+                            <p class="mb-0">
+                                Date of Issue: <span t-esc="datetime.datetime.now().strftime('%B %d, %Y')"/>
+                            </p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

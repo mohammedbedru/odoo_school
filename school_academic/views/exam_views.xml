@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Exam list (List) View -->
+    <record id="view_school_exam_list" model="ir.ui.view">
+        <field name="name">school.exam.list</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <list string="Exams" decoration-info="state == 'draft'" decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="exam_type"/>
+                <field name="section_id"/>
+                <field name="subject_id"/>
+                <field name="date"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'draft'" 
+                       decoration-warning="state == 'open'" 
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Exam Form View -->
+    <record id="view_school_exam_form" model="ir.ui.view">
+        <field name="name">school.exam.form</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <form string="Exam">
+                <header>
+                    <button name="action_open" string="Start Marks Entry" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    
+                    <button name="action_generate_students" string="Get Student List" type="object" 
+                            invisible="state != 'open' or mark_line_ids != []" 
+                            help="This will pull all active students from the selected section."/>
+                    
+                    <button name="action_publish" string="Publish Results" type="object" 
+                            class="oe_highlight" invisible="state != 'open'"/>
+                    
+                    <button name="action_set_draft" string="Reset to Draft" type="object" 
+                            invisible="state == 'draft'"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,open,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Mathematics Midterm" readonly="state == 'done'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Exam Information">
+                            <field name="exam_type" readonly="state == 'done'"/>
+                            <field name="term" readonly="state == 'done'"/>
+                            <field name="academic_year_id" options="{'no_create': True}" readonly="state == 'done'"/>
+                            <field name="date" readonly="state == 'done'"/>
+                        </group>
+                        <group string="Class &amp; Faculty">
+                            <field name="section_id" options="{'no_create': True}" readonly="state == 'done'"/>
+                            <field name="subject_id" options="{'no_create': True}" readonly="state == 'done'"/>
+                            <field name="teacher_id" options="{'no_create': True}" readonly="state == 'done'"/>
+                            <field name="max_mark" readonly="state == 'done'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Marks Entry" name="marks">
+                            <field name="mark_line_ids" readonly="state == 'done'">
+                                <list editable="bottom" decoration-danger="grade == 'F'">
+                                    <field name="student_id" options="{'no_create': True}"/>
+                                    <field name="mark"/>
+                                    <field name="grade" readonly="1" force_save="1"/>
+                                    <field name="remark"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- Exam Search View -->
+    <record id="view_school_exam_search" model="ir.ui.view">
+        <field name="name">school.exam.search</field>
+        <field name="model">school.exam</field>
+        <field name="arch" type="xml">
+            <search string="Search Exams">
+                <field name="name"/>
+                <field name="section_id"/>
+                <field name="subject_id"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Published" name="published" domain="[('state', '=', 'done')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Exam Type" name="group_by_type" context="{'group_by': 'exam_type'}"/>
+                    <filter string="Term" name="group_by_term" context="{'group_by': 'term'}"/>
+                    <filter string="Section" name="group_by_section" context="{'group_by': 'section_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Exam Action -->
+    <record id="action_school_exam" model="ir.actions.act_window">
+        <field name="name">Exams</field>
+        <field name="res_model">school.exam</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create an exam to record student performance.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_school_exam" 
+              name="Exams" 
+              parent="menu_school_academics" 
+              action="action_school_exam" 
+              sequence="30"/>
+
+</odoo>

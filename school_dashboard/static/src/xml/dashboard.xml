@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="school_dashboard.Dashboard">
+        <div class="school_dashboard_container">
+            <!-- Loading Spinner -->
+            <div t-if="state.loading" class="dashboard_loading">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p>Loading dashboard data...</p>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div t-else="" class="dashboard_content">
+                <!-- Header -->
+                <div class="dashboard_header">
+                    <h1>School Dashboard</h1>
+                    <button class="btn btn-primary" t-on-click="refreshDashboard">
+                        <i class="fa fa-refresh"/> Refresh
+                    </button>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="kpi_section">
+                    <div class="kpi_card kpi_primary" t-on-click="openStudents">
+                        <div class="kpi_icon">
+                            <i class="fa fa-users fa-3x"/>
+                        </div>
+                        <div class="kpi_content">
+                            <div class="kpi_value"><t t-esc="formatNumber(state.kpis.active_students)"/></div>
+                            <div class="kpi_label">Active Students</div>
+                            <div class="kpi_sublabel">Total: <t t-esc="formatNumber(state.kpis.total_students)"/></div>
+                        </div>
+                    </div>
+
+                    <div class="kpi_card kpi_success" t-on-click="openFees">
+                        <div class="kpi_icon">
+                            <i class="fa fa-money fa-3x"/>
+                        </div>
+                        <div class="kpi_content">
+                            <div class="kpi_value"><t t-esc="formatCurrency(state.kpis.total_collected)"/></div>
+                            <div class="kpi_label">Fees Collected</div>
+                            <div class="kpi_sublabel">Rate: <t t-esc="formatPercent(state.kpis.collection_rate)"/></div>
+                        </div>
+                    </div>
+
+                    <div class="kpi_card kpi_warning" t-on-click="openOverdueFees">
+                        <div class="kpi_icon">
+                            <i class="fa fa-exclamation-triangle fa-3x"/>
+                        </div>
+                        <div class="kpi_content">
+                            <div class="kpi_value"><t t-esc="formatCurrency(state.kpis.total_pending)"/></div>
+                            <div class="kpi_label">Pending Fees</div>
+                            <div class="kpi_sublabel">Click to view</div>
+                        </div>
+                    </div>
+
+                    <div class="kpi_card kpi_info">
+                        <div class="kpi_icon">
+                            <i class="fa fa-check-circle fa-3x"/>
+                        </div>
+                        <div class="kpi_content">
+                            <div class="kpi_value"><t t-esc="formatPercent(state.kpis.attendance_rate)"/></div>
+                            <div class="kpi_label">Attendance Rate</div>
+                            <div class="kpi_sublabel">Overall average</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts_section">
+                    <!-- Row 1 -->
+                    <div class="chart_row">
+                        <div class="chart_card chart_large">
+                            <canvas id="studentGrowthChart"/>
+                        </div>
+                        <div class="chart_card chart_small">
+                            <canvas id="genderChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div class="chart_row">
+                        <div class="chart_card chart_medium">
+                            <canvas id="gradeDistributionChart"/>
+                        </div>
+                        <div class="chart_card chart_medium">
+                            <canvas id="feeCollectionChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="chart_row">
+                        <div class="chart_card chart_large">
+                            <canvas id="attendanceTrendChart"/>
+                        </div>
+                        <div class="chart_card chart_small">
+                            <canvas id="paymentStatusChart"/>
+                        </div>
+                    </div>
+
+                    <!-- Row 4 -->
+                    <div class="chart_row">
+                        <div class="chart_card chart_medium">
+                            <canvas id="academicGradeChart"/>
+                        </div>
+                        <div class="chart_card chart_medium">
+                            <div class="info_card">
+                                <h3>Upcoming Exams</h3>
+                                <div class="exam_list">
+                                    <t t-if="state.academicStats.upcoming_exams and state.academicStats.upcoming_exams.length">
+                                        <div t-foreach="state.academicStats.upcoming_exams" t-as="exam" t-key="exam.name" class="exam_item">
+                                            <div class="exam_date"><t t-esc="exam.date"/></div>
+                                            <div class="exam_name"><t t-esc="exam.name"/></div>
+                                            <div class="exam_subject"><t t-esc="exam.subject"/></div>
+                                        </div>
+                                    </t>
+                                    <t t-else="">
+                                        <p class="text-muted">No upcoming exams</p>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics Section -->
+                <div class="stats_section">
+                    <div class="stat_card">
+                        <h3>Student Statistics</h3>
+                        <div class="stat_item">
+                            <span class="stat_label">New Admissions (This Month):</span>
+                            <span class="stat_value"><t t-esc="state.studentStats.new_admissions || 0"/></span>
+                        </div>
+                        <div class="stat_item">
+                            <span class="stat_label">Male Students:</span>
+                            <span class="stat_value"><t t-esc="(state.studentStats.gender &amp;&amp; state.studentStats.gender.male) || 0"/></span>
+                        </div>
+                        <div class="stat_item">
+                            <span class="stat_label">Female Students:</span>
+                            <span class="stat_value"><t t-esc="(state.studentStats.gender &amp;&amp; state.studentStats.gender.female) || 0"/></span>
+                        </div>
+                    </div>
+
+                    <div class="stat_card">
+                        <h3>Fee Statistics</h3>
+                        <div class="stat_item">
+                            <span class="stat_label">Overdue Fees:</span>
+                            <span class="stat_value text-danger"><t t-esc="formatCurrency(state.feeStats.overdue_amount || 0)"/></span>
+                        </div>
+                        <div class="stat_item">
+                            <span class="stat_label">Overdue Count:</span>
+                            <span class="stat_value text-danger"><t t-esc="state.feeStats.overdue_count || 0"/></span>
+                        </div>
+                        <div class="stat_item">
+                            <span class="stat_label">Paid Invoices:</span>
+                            <span class="stat_value text-success"><t t-esc="(state.feeStats.payment_status &amp;&amp; state.feeStats.payment_status.paid) || 0"/></span>
+                        </div>
+                    </div>
+
+                    <div class="stat_card">
+                        <h3>Academic Statistics</h3>
+                        <div class="stat_item">
+                            <span class="stat_label">Average Performance:</span>
+                            <span class="stat_value"><t t-esc="formatPercent(state.academicStats.average_percentage || 0)"/></span>
+                        </div>
+                        <div class="stat_item">
+                            <span class="stat_label">Grade A Students:</span>
+                            <span class="stat_value text-success"><t t-esc="(state.academicStats.grade_distribution &amp;&amp; state.academicStats.grade_distribution.A) || 0"/></span>
+                        </div>
+                        <div class="stat_item">
+                            <span class="stat_label">Grade F Students:</span>
+                            <span class="stat_value text-danger"><t t-esc="(state.academicStats.grade_distribution &amp;&amp; state.academicStats.grade_distribution.F) || 0"/></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

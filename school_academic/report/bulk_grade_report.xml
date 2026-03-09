@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report Definition -->
+    <record id="action_report_bulk_grades" model="ir.actions.report">
+        <field name="name">Bulk Grade Report</field>
+        <field name="model">school.bulk.grade.report.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">school_academic.report_bulk_grades_document</field>
+        <field name="report_file">school_academic.report_bulk_grades_document</field>
+        <field name="binding_model_id" ref="model_school_bulk_grade_report_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_bulk_grades_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="wizard">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header -->
+                        <div class="text-center mb-4">
+                            <h2>Grade Report</h2>
+                            <h4>
+                                <span t-field="wizard.grade_id.name"/> - 
+                                <span t-field="wizard.section_id.name"/>
+                            </h4>
+                            <p>
+                                <strong>Academic Year:</strong> <span t-field="wizard.academic_year_id.name"/> | 
+                                <strong>Term:</strong> 
+                                <span t-if="wizard.term == 't1'">Term 1</span>
+                                <span t-elif="wizard.term == 't2'">Term 2</span>
+                                <span t-elif="wizard.term == 't3'">Term 3</span>
+                            </p>
+                        </div>
+
+                        <!-- Get students -->
+                        <t t-set="students" t-value="wizard.env['school.student'].search([
+                            ('grade_id', '=', wizard.grade_id.id),
+                            ('section_id', '=', wizard.section_id.id),
+                            ('status', 'in', ['active', 'enrolled'])
+                        ], order='name')"/>
+
+                        <!-- Grades Table -->
+                        <table class="table table-sm table-bordered">
+                            <thead style="background-color: #f0f0f0;">
+                                <tr>
+                                    <th class="text-center" style="width: 5%;">#</th>
+                                    <th style="width: 20%;">Student Name</th>
+                                    <th class="text-center" style="width: 10%;">Student Code</th>
+                                    
+                                    <!-- Subject columns -->
+                                    <t t-foreach="wizard.subject_ids" t-as="subject">
+                                        <th class="text-center" style="width: 8%;">
+                                            <span t-field="subject.name"/>
+                                        </th>
+                                    </t>
+                                    
+                                    <th class="text-center" style="width: 8%;">Average</th>
+                                    <th class="text-center" style="width: 8%;">Total</th>
+                                    <th class="text-center" style="width: 8%;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="student_index" t-value="0"/>
+                                <t t-foreach="students" t-as="student">
+                                    <t t-set="student_index" t-value="student_index + 1"/>
+                                    
+                                    <!-- Get report card for this student -->
+                                    <t t-set="report_card" t-value="wizard.env['school.report.card'].search([
+                                        ('student_id', '=', student.id),
+                                        ('academic_year_id', '=', wizard.academic_year_id.id),
+                                        ('term', '=', wizard.term)
+                                    ], limit=1)"/>
+                                    
+                                    <tr>
+                                        <td class="text-center"><t t-esc="student_index"/></td>
+                                        <td><span t-field="student.name"/></td>
+                                        <td class="text-center"><span t-field="student.student_code"/></td>
+                                        
+                                        <!-- Grade for each subject -->
+                                        <t t-set="total_marks" t-value="0"/>
+                                        <t t-set="subject_count" t-value="0"/>
+                                        
+                                        <t t-foreach="wizard.subject_ids" t-as="subject">
+                                            <t t-set="grade_line" t-value="report_card.line_ids.filtered(lambda l: l.subject_id.id == subject.id)"/>
+                                            <td class="text-center">
+                                                <t t-if="grade_line">
+                                                    <span t-esc="'%.1f' % grade_line[0].percentage"/>%
+                                                    <t t-set="total_marks" t-value="total_marks + grade_line[0].percentage"/>
+                                                    <t t-set="subject_count" t-value="subject_count + 1"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="text-muted">-</span>
+                                                </t>
+                                            </td>
+                                        </t>
+                                        
+                                        <!-- Average -->
+                                        <td class="text-center">
+                                            <t t-if="report_card and report_card.average > 0">
+                                                <strong><t t-esc="'%.1f' % report_card.average"/>%</strong>
+                                            </t>
+                                            <t t-elif="subject_count > 0">
+                                                <strong><t t-esc="'%.1f' % (total_marks / subject_count)"/>%</strong>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">-</span>
+                                            </t>
+                                        </td>
+                                        
+                                        <!-- Total -->
+                                        <td class="text-center">
+                                            <t t-if="report_card">
+                                                <span t-esc="'%.1f' % report_card.total"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-muted">-</span>
+                                            </t>
+                                        </td>
+                                        
+                                        <!-- Status -->
+                                        <td class="text-center">
+                                            <t t-if="report_card">
+                                                <span t-if="report_card.state == 'draft'" class="badge bg-secondary">Draft</span>
+                                                <span t-elif="report_card.state == 'confirmed'" class="badge bg-info">Confirmed</span>
+                                                <span t-elif="report_card.state == 'published'" class="badge bg-success">Published</span>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="badge bg-warning">No Report</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Summary Statistics -->
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <p><strong>Total Students:</strong> <t t-esc="len(students)"/></p>
+                                <p><strong>Subjects:</strong> <t t-esc="', '.join(wizard.subject_ids.mapped('name'))"/></p>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p><strong>Generated on:</strong> <t t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/></p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

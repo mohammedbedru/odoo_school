@@ -1,0 +1,485 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Parent Children List -->
+    <template id="parent_children" name="Parent Children List">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-users"/> My Children</h1>
+                    <p>View and manage your children's academic records</p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="children_grid">
+                    <t t-foreach="children" t-as="child">
+                        <div class="child_card">
+                            <div class="child_card_header">
+                                <div class="child_avatar">
+                                    <t t-if="child.photo">
+                                        <img t-att-src="'data:image/png;base64,%s' % child.photo.decode('utf-8')" alt="Student Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-esc="child.name[:1]"/>
+                                    </t>
+                                </div>
+                                <div class="child_info">
+                                    <h3><t t-esc="child.name"/></h3>
+                                    <p><t t-esc="child.student_code"/></p>
+                                    <p><t t-esc="child.grade_id.name"/> - <t t-esc="child.section_id.name"/></p>
+                                </div>
+                            </div>
+
+                            <div class="child_stats">
+                                <div class="child_stat">
+                                    <div class="child_stat_value"><t t-esc="child.status.title()"/></div>
+                                    <div class="child_stat_label">Status</div>
+                                </div>
+                                <div class="child_stat">
+                                    <div class="child_stat_value"><t t-esc="child.age"/></div>
+                                    <div class="child_stat_label">Age</div>
+                                </div>
+                            </div>
+
+                            <div class="list-group list-group-flush mb-3">
+                                <a t-attf-href="/my/parent/child/#{child.id}/dashboard" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-tachometer"/> Dashboard
+                                </a>
+                                <a t-attf-href="/my/parent/child/#{child.id}/attendance" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-check-circle"/> Attendance
+                                </a>
+                                <a t-attf-href="/my/parent/child/#{child.id}/marks" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-star"/> Exam Marks
+                                </a>
+                                <a t-attf-href="/my/parent/child/#{child.id}/report-cards" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-file-text"/> Report Cards
+                                </a>
+                                <a t-attf-href="/my/parent/child/#{child.id}/fees" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-money"/> Fees
+                                </a>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Parent Child Dashboard -->
+    <template id="parent_child_dashboard" name="Parent Child Dashboard">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-tachometer"/> <t t-esc="child.name"/>'s Dashboard</h1>
+                    <p><t t-esc="child.grade_id.name"/> - <t t-esc="child.section_id.name"/></p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="mb-3">
+                    <a href="/my/parent/children" class="btn-portal-outline">
+                        <i class="fa fa-arrow-left"/> Back to Children List
+                    </a>
+                </div>
+
+                <div class="dashboard_cards">
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-star"/></div>
+                        <div class="dashboard_card_value"><t t-esc="'%.2f' % gpa"/>%</div>
+                        <div class="dashboard_card_label">Current GPA</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-check-circle"/></div>
+                        <div class="dashboard_card_value"><t t-esc="'%.1f' % attendance_percentage"/>%</div>
+                        <div class="dashboard_card_label">Attendance</div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="profile_card">
+                            <h3 class="mb-3"><i class="fa fa-calendar"/> Upcoming Exams</h3>
+                            <t t-if="upcoming_exams">
+                                <div class="list-group">
+                                    <t t-foreach="upcoming_exams" t-as="exam">
+                                        <div class="list-group-item">
+                                            <div class="d-flex justify-content-between">
+                                                <strong><t t-esc="exam.name"/></strong>
+                                                <span class="badge badge-info"><t t-esc="exam.date"/></span>
+                                            </div>
+                                            <small class="text-muted"><t t-esc="exam.subject_id.name"/></small>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="empty_state">
+                                    <p>No upcoming exams</p>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="profile_card">
+                            <h3 class="mb-3"><i class="fa fa-link"/> Quick Links</h3>
+                            <div class="list-group">
+                                <a t-attf-href="/my/parent/child/#{child.id}/attendance" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-check-circle"/> View Attendance
+                                </a>
+                                <a t-attf-href="/my/parent/child/#{child.id}/marks" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-star"/> View Exam Marks
+                                </a>
+                                <a t-attf-href="/my/parent/child/#{child.id}/report-cards" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-file-text"/> View Report Cards
+                                </a>
+                                <a t-attf-href="/my/parent/child/#{child.id}/fees" class="list-group-item list-group-item-action">
+                                    <i class="fa fa-money"/> View Fees
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Parent Child Attendance (reuse student template with child context) -->
+    <template id="parent_child_attendance" name="Parent Child Attendance">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-check-circle"/> <t t-esc="child.name"/>'s Attendance</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="mb-3">
+                    <a t-attf-href="/my/parent/child/#{child.id}/dashboard" class="btn-portal-outline">
+                        <i class="fa fa-arrow-left"/> Back to Dashboard
+                    </a>
+                </div>
+
+                <div class="dashboard_cards mb-4">
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-check text-success"/></div>
+                        <div class="dashboard_card_value"><t t-esc="present"/></div>
+                        <div class="dashboard_card_label">Present</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-times text-danger"/></div>
+                        <div class="dashboard_card_value"><t t-esc="absent"/></div>
+                        <div class="dashboard_card_label">Absent</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-clock-o text-warning"/></div>
+                        <div class="dashboard_card_value"><t t-esc="late"/></div>
+                        <div class="dashboard_card_label">Late</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-file-text text-info"/></div>
+                        <div class="dashboard_card_value"><t t-esc="excused"/></div>
+                        <div class="dashboard_card_label">Excused</div>
+                    </div>
+                </div>
+
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="attendance_lines" t-as="line">
+                                <tr>
+                                    <td><t t-esc="line.attendance_id.date"/></td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if line.status == 'present' else 'danger' if line.status == 'absent' else 'warning' if line.status == 'late' else 'info')">
+                                            <t t-esc="line.status.title()"/>
+                                        </span>
+                                    </td>
+                                    <td><t t-esc="line.note or '-'"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Parent Child Marks -->
+    <template id="parent_child_marks" name="Parent Child Marks">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-star"/> <t t-esc="child.name"/>'s Exam Marks</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="mb-3">
+                    <a t-attf-href="/my/parent/child/#{child.id}/dashboard" class="btn-portal-outline">
+                        <i class="fa fa-arrow-left"/> Back to Dashboard
+                    </a>
+                </div>
+
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Exam</th>
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Mark</th>
+                                <th>Max Mark</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="exam_marks" t-as="mark">
+                                <tr>
+                                    <td><t t-esc="mark.exam_id.name"/></td>
+                                    <td><t t-esc="mark.exam_id.subject_id.name"/></td>
+                                    <td><t t-esc="mark.exam_id.date"/></td>
+                                    <td><strong><t t-esc="'%.2f' % mark.mark"/></strong></td>
+                                    <td><t t-esc="'%.2f' % mark.exam_id.max_mark"/></td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if mark.grade in ['A', 'B'] else 'warning' if mark.grade == 'C' else 'danger')">
+                                            <t t-esc="mark.grade"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if mark.mark >= (mark.exam_id.max_mark * 0.5) else 'danger')">
+                                            <t t-esc="'Pass' if mark.mark >= (mark.exam_id.max_mark * 0.5) else 'Fail'"/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Parent Child Report Cards -->
+    <template id="parent_child_report_cards" name="Parent Child Report Cards">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-file-text"/> <t t-esc="child.name"/>'s Report Cards</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="mb-3">
+                    <a t-attf-href="/my/parent/child/#{child.id}/dashboard" class="btn-portal-outline">
+                        <i class="fa fa-arrow-left"/> Back to Dashboard
+                    </a>
+                </div>
+
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Academic Year</th>
+                                <th>Term</th>
+                                <th>Average</th>
+                                <th>Total Marks</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="report_cards" t-as="report">
+                                <tr>
+                                    <td><t t-esc="report.academic_year_id.name"/></td>
+                                    <td><t t-esc="dict(report._fields['term'].selection).get(report.term)"/></td>
+                                    <td><strong><t t-esc="'%.2f' % report.average"/>%</strong></td>
+                                    <td><t t-esc="'%.2f' % report.total"/></td>
+                                    <td>
+                                        <a t-attf-href="/my/parent/child/#{child.id}/report-card/#{report.id}" class="btn btn-sm btn-primary">
+                                            <i class="fa fa-eye"/> View
+                                        </a>
+                                        <a t-attf-href="/my/parent/child/#{child.id}/report-card/#{report.id}/pdf" class="btn btn-sm btn-success">
+                                            <i class="fa fa-download"/> PDF
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Parent Child Report Card Detail -->
+    <template id="parent_child_report_card_detail" name="Parent Child Report Card Detail">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-file-text"/> Report Card</h1>
+                    <p><t t-esc="child.name"/> - <t t-esc="report_card.name"/></p>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="mb-3">
+                    <a t-attf-href="/my/parent/child/#{child.id}/report-cards" class="btn-portal-outline">
+                        <i class="fa fa-arrow-left"/> Back to Report Cards
+                    </a>
+                </div>
+
+                <div class="profile_card">
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h4>Student Information</h4>
+                            <p><strong>Name:</strong> <t t-esc="child.name"/></p>
+                            <p><strong>Code:</strong> <t t-esc="child.student_code"/></p>
+                            <p><strong>Grade:</strong> <t t-esc="child.grade_id.name"/> - <t t-esc="child.section_id.name"/></p>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Report Information</h4>
+                            <p><strong>Academic Year:</strong> <t t-esc="report_card.academic_year_id.name"/></p>
+                            <p><strong>Term:</strong> <t t-esc="dict(report_card._fields['term'].selection).get(report_card.term)"/></p>
+                            <p><strong>Average:</strong> <t t-esc="'%.2f' % report_card.average"/>%</p>
+                        </div>
+                    </div>
+
+                    <h4 class="mb-3">Subject Grades</h4>
+                    <div class="portal_table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Subject</th>
+                                    <th>Quiz</th>
+                                    <th>Midterm</th>
+                                    <th>Final</th>
+                                    <th>Assignment</th>
+                                    <th>Total</th>
+                                    <th>Percentage</th>
+                                    <th>Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="report_card.line_ids" t-as="line">
+                                    <tr>
+                                        <td><strong><t t-esc="line.subject_id.name"/></strong></td>
+                                        <td>
+                                            <t t-if="line.quiz_mark > 0" t-esc="'%.0f/%.0f' % (line.quiz_mark, line.quiz_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.mid_mark > 0" t-esc="'%.0f/%.0f' % (line.mid_mark, line.mid_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.final_mark > 0" t-esc="'%.0f/%.0f' % (line.final_mark, line.final_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="line.assignment_mark > 0" t-esc="'%.0f/%.0f' % (line.assignment_mark, line.assignment_max)"/>
+                                            <t t-else="">-</t>
+                                        </td>
+                                        <td><strong><t t-esc="'%.0f/%.0f' % (line.total_mark, line.total_max)"/></strong></td>
+                                        <td><t t-esc="'%.2f' % line.percentage"/>%</td>
+                                        <td>
+                                            <span t-att-class="'badge badge-' + ('success' if line.grade in ['A', 'B'] else 'warning' if line.grade == 'C' else 'danger')">
+                                                <t t-esc="line.grade"/>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a t-attf-href="/my/parent/child/#{child.id}/report-card/#{report_card.id}/pdf" class="btn-portal">
+                            <i class="fa fa-download"/> Download PDF
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Parent Child Fees -->
+    <template id="parent_child_fees" name="Parent Child Fees">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-money"/> <t t-esc="child.name"/>'s Fees</h1>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="mb-3">
+                    <a t-attf-href="/my/parent/child/#{child.id}/dashboard" class="btn-portal-outline">
+                        <i class="fa fa-arrow-left"/> Back to Dashboard
+                    </a>
+                </div>
+
+                <div class="dashboard_cards mb-4">
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-money"/></div>
+                        <div class="dashboard_card_value">$<t t-esc="'%.2f' % total_amount"/></div>
+                        <div class="dashboard_card_label">Total Amount</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-check text-success"/></div>
+                        <div class="dashboard_card_value">$<t t-esc="'%.2f' % total_paid"/></div>
+                        <div class="dashboard_card_label">Paid</div>
+                    </div>
+                    <div class="dashboard_card text-center">
+                        <div class="dashboard_card_icon"><i class="fa fa-exclamation text-danger"/></div>
+                        <div class="dashboard_card_value">$<t t-esc="'%.2f' % total_due"/></div>
+                        <div class="dashboard_card_label">Due</div>
+                    </div>
+                </div>
+
+                <div class="portal_table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>Due Date</th>
+                                <th>Amount</th>
+                                <th>Paid</th>
+                                <th>Due</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="fees" t-as="fee">
+                                <tr>
+                                    <td><t t-esc="fee.structure_id.name"/></td>
+                                    <td><t t-esc="fee.due_date"/></td>
+                                    <td>$<t t-esc="'%.2f' % fee.amount_total"/></td>
+                                    <td>$<t t-esc="'%.2f' % fee.amount_paid"/></td>
+                                    <td>$<t t-esc="'%.2f' % fee.amount_due"/></td>
+                                    <td>
+                                        <span t-att-class="'badge badge-' + ('success' if fee.payment_state == 'paid' else 'warning' if fee.payment_state == 'partial' else 'danger')">
+                                            <t t-esc="fee.payment_state.replace('_', ' ').title()"/>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a t-if="fee.invoice_id" t-attf-href="/my/parent/child/#{child.id}/fee/#{fee.id}/invoice" class="btn btn-sm btn-success">
+                                            <i class="fa fa-download"/> Invoice
+                                        </a>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

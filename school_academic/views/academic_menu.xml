@@ -1,0 +1,13 @@
+<odoo>
+    <menuitem id="menu_school_academics" name="Academics"
+              parent="school_core.menu_school_root" sequence="40"/>
+
+    <menuitem id="menu_school_report_cards" name="Report Cards"
+              parent="menu_school_academics" sequence="40"/>
+
+    <menuitem id="menu_school_academic_reports" name="Reports"
+              parent="menu_school_academics" sequence="45"/>
+
+    <menuitem id="menu_school_wizards" name="Wizards"
+              parent="menu_school_academics" sequence="50"/>
+</odoo>

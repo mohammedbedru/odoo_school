@@ -1,0 +1,143 @@
+<odoo>
+    <!-- Student Analytics List View -->
+    <record id="view_student_analytics_list" model="ir.ui.view">
+        <field name="name">school.student.analytics.list</field>
+        <field name="model">school.student.analytics</field>
+        <field name="arch" type="xml">
+            <list string="Student Analytics" create="false" edit="false" delete="false">
+                <field name="grade_id"/>
+                <field name="section_id"/>
+                <field name="status"/>
+                <field name="student_count"/>
+                <field name="male_count"/>
+                <field name="female_count"/>
+                <field name="average_age"/>
+                <button name="action_view_students" type="object" string="View Students" class="btn-link"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Student Analytics Graph View -->
+    <record id="view_student_analytics_graph" model="ir.ui.view">
+        <field name="name">school.student.analytics.graph</field>
+        <field name="model">school.student.analytics</field>
+        <field name="arch" type="xml">
+            <graph string="Student Analytics" type="bar" stacked="True">
+                <field name="grade_id"/>
+                <field name="male_count" type="measure"/>
+                <field name="female_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Student Analytics Pivot View -->
+    <record id="view_student_analytics_pivot" model="ir.ui.view">
+        <field name="name">school.student.analytics.pivot</field>
+        <field name="model">school.student.analytics</field>
+        <field name="arch" type="xml">
+            <pivot string="Student Analytics">
+                <field name="grade_id" type="row"/>
+                <field name="section_id" type="row"/>
+                <field name="student_count" type="measure"/>
+                <field name="male_count" type="measure"/>
+                <field name="female_count" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Student Analytics Action -->
+    <record id="action_student_analytics" model="ir.actions.act_window">
+        <field name="name">Student Analytics</field>
+        <field name="res_model">school.student.analytics</field>
+        <field name="view_mode">graph,pivot,list</field>
+    </record>
+
+    <!-- Grade Analytics Form View -->
+    <record id="view_grade_analytics_form" model="ir.ui.view">
+        <field name="name">school.grade.analytics.form</field>
+        <field name="model">school.grade.analytics</field>
+        <field name="arch" type="xml">
+            <form string="Grade Analytics">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="grade_id"/>
+                            <field name="academic_year_id"/>
+                        </group>
+                    </group>
+
+                    <group string="Student Metrics">
+                        <group>
+                            <field name="total_students"/>
+                            <field name="male_students"/>
+                            <field name="female_students"/>
+                        </group>
+                    </group>
+
+                    <group string="Academic Metrics">
+                        <group>
+                            <field name="average_attendance" widget="percentage"/>
+                            <field name="total_exams"/>
+                        </group>
+                        <group>
+                            <field name="average_grade"/>
+                        </group>
+                    </group>
+
+                    <group string="Fee Metrics">
+                        <group>
+                            <field name="total_fees" widget="monetary"/>
+                            <field name="collected_fees" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="pending_fees" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Grade Analytics List View -->
+    <record id="view_grade_analytics_list" model="ir.ui.view">
+        <field name="name">school.grade.analytics.list</field>
+        <field name="model">school.grade.analytics</field>
+        <field name="arch" type="xml">
+            <list string="Grade Analytics">
+                <field name="grade_id"/>
+                <field name="academic_year_id"/>
+                <field name="total_students"/>
+                <field name="average_attendance" widget="percentage"/>
+                <field name="average_grade"/>
+                <field name="total_fees" widget="monetary"/>
+                <field name="collected_fees" widget="monetary"/>
+                <field name="pending_fees" widget="monetary"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Grade Analytics Graph View -->
+    <record id="view_grade_analytics_graph" model="ir.ui.view">
+        <field name="name">school.grade.analytics.graph</field>
+        <field name="model">school.grade.analytics</field>
+        <field name="arch" type="xml">
+            <graph string="Grade Analytics" type="bar">
+                <field name="grade_id"/>
+                <field name="total_students" type="measure"/>
+                <field name="average_attendance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Grade Analytics Action -->
+    <record id="action_grade_analytics" model="ir.actions.act_window">
+        <field name="name">Grade Analytics</field>
+        <field name="res_model">school.grade.analytics</field>
+        <field name="view_mode">list,form,graph</field>
+    </record>
+</odoo>

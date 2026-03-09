@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- list (List) View -->
+    <record id="view_school_academic_year_list" model="ir.ui.view">
+        <field name="name">school.academic.year.list</field>
+        <field name="model">school.academic.year</field>
+        <field name="arch" type="xml">
+            <list string="Academic Years" decoration-success="active == True">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_school_academic_year_form" model="ir.ui.view">
+        <field name="name">school.academic.year.form</field>
+        <field name="model">school.academic.year</field>
+        <field name="arch" type="xml">
+            <form string="Academic Year">
+                <sheet>
+                    <!-- Archive Ribbon -->
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" invisible="active"/>
+                    
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. 2025/2026"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Duration">
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                        <group string="Settings">
+                            <field name="active" widget="boolean_toggle"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_school_academic_year_search" model="ir.ui.view">
+        <field name="name">school.academic.year.search</field>
+        <field name="model">school.academic.year</field>
+        <field name="arch" type="xml">
+            <search string="Search Academic Years">
+                <field name="name"/>
+                <separator/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Company" name="group_by_company" context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_school_academic_year" model="ir.actions.act_window">
+        <field name="name">Academic Years</field>
+        <field name="res_model">school.academic.year</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first academic year.
+            </p>
+            <p>
+                Define the start and end dates for your school terms.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <!-- Placed inside the Configuration menu created in previous steps -->
+    <menuitem id="menu_school_academic_year" 
+              name="Academic Years" 
+              parent="menu_school_config" 
+              action="action_school_academic_year" 
+              sequence="5"/>
+
+</odoo>

@@ -1,0 +1,162 @@
+<odoo>
+    <!-- OWL Dashboard Client Action -->
+    <record id="action_school_dashboard_owl" model="ir.actions.client">
+        <field name="name">School Dashboard</field>
+        <field name="tag">school_dashboard.dashboard</field>
+    </record>
+
+    <!-- Main Dashboard Form View -->
+    <record id="view_school_dashboard_form" model="ir.ui.view">
+        <field name="name">school.dashboard.form</field>
+        <field name="model">school.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="School Dashboard" create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>School Dashboard</h1>
+                        <p>Overview of key metrics and statistics</p>
+                    </div>
+
+                    <!-- Student Statistics -->
+                    <group string="Student Statistics">
+                        <group>
+                            <field name="total_students" widget="statinfo"/>
+                            <field name="active_students" widget="statinfo"/>
+                            <field name="new_admissions_month" widget="statinfo"/>
+                        </group>
+                        <group>
+                            <field name="male_students" widget="statinfo"/>
+                            <field name="female_students" widget="statinfo"/>
+                        </group>
+                    </group>
+
+                    <!-- Fee Statistics -->
+                    <group string="Fee Collection Statistics">
+                        <group>
+                            <field name="total_fees_collected" widget="monetary"/>
+                            <field name="total_fees_pending" widget="monetary"/>
+                            <field name="fees_collected_month" widget="monetary"/>
+                        </group>
+                        <group>
+                            <field name="overdue_fees" widget="monetary"/>
+                            <field name="collection_rate" widget="percentage"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <!-- Academic Statistics -->
+                    <group string="Academic Statistics">
+                        <group>
+                            <field name="total_exams"/>
+                            <field name="exams_this_month"/>
+                        </group>
+                        <group>
+                            <field name="average_attendance_rate" widget="percentage"/>
+                            <field name="total_classes"/>
+                        </group>
+                    </group>
+
+                    <!-- Staff Statistics -->
+                    <group string="Staff Statistics">
+                        <group>
+                            <field name="total_teachers"/>
+                        </group>
+                    </group>
+
+                    <!-- Quick Actions -->
+                    <group string="Quick Actions">
+                        <button name="action_view_students" type="object" string="View Students" class="btn-primary"/>
+                        <button name="action_view_fees" type="object" string="View Fees" class="btn-primary"/>
+                        <button name="action_view_overdue_fees" type="object" string="View Overdue Fees" class="btn-warning"/>
+                        <button name="action_view_exams" type="object" string="View Exams" class="btn-primary"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Dashboard Kanban View with Cards -->
+    <record id="view_school_dashboard_kanban" model="ir.ui.view">
+        <field name="name">school.dashboard.kanban</field>
+        <field name="model">school.dashboard</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard" create="false" edit="false" delete="false">
+                <field name="total_students"/>
+                <field name="active_students"/>
+                <field name="total_fees_collected"/>
+                <field name="total_fees_pending"/>
+                <field name="overdue_fees"/>
+                <field name="collection_rate"/>
+                <field name="average_attendance_rate"/>
+                <field name="currency_id"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_dashboard">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_primary">School Dashboard</div>
+                                </div>
+                            </div>
+                            <div class="container o_kanban_card_content">
+                                <div class="row">
+                                    <!-- Students Card -->
+                                    <div class="col-md-4 o_kanban_primary_left">
+                                        <button class="btn btn-primary" name="action_view_students" type="object">
+                                            <span class="o_value"><t t-esc="record.active_students.value"/></span>
+                                            <span class="o_label">Active Students</span>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Fees Card -->
+                                    <div class="col-md-4">
+                                        <button class="btn btn-success" name="action_view_fees" type="object">
+                                            <span class="o_value"><t t-esc="record.total_fees_collected.value"/></span>
+                                            <span class="o_label">Fees Collected</span>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Overdue Card -->
+                                    <div class="col-md-4">
+                                        <button class="btn btn-warning" name="action_view_overdue_fees" type="object">
+                                            <span class="o_value"><t t-esc="record.overdue_fees.value"/></span>
+                                            <span class="o_label">Overdue Fees</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <span class="o_kanban_record_subtitle">Collection Rate</span>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-success" role="progressbar" 
+                                                 t-att-style="'width: ' + record.collection_rate.value + '%'">
+                                                <t t-esc="Math.round(record.collection_rate.value)"/>%
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <span class="o_kanban_record_subtitle">Attendance Rate</span>
+                                        <div class="progress">
+                                            <div class="progress-bar bg-info" role="progressbar" 
+                                                 t-att-style="'width: ' + record.average_attendance_rate.value + '%'">
+                                                <t t-esc="Math.round(record.average_attendance_rate.value)"/>%
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Dashboard Action (Old) -->
+    <record id="action_school_dashboard" model="ir.actions.act_window">
+        <field name="name">School Dashboard (Classic)</field>
+        <field name="res_model">school.dashboard</field>
+        <field name="view_mode">kanban,form</field>
+        <field name="context">{'create': False}</field>
+    </record>
+</odoo>

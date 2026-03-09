@@ -1,0 +1,91 @@
+<odoo>
+    <template id="report_attendance_sheet_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Helvetica', sans-serif; color: #333;">
+                        
+                        <!-- Header: Official Title -->
+                        <div class="text-center mb-4">
+                            <h2 style="font-weight: bold; text-transform: uppercase; color: #1a4d80; margin-bottom: 5px;">
+                                Daily Attendance Sheet
+                            </h2>
+                            <h5 class="text-muted">
+                                <span t-field="o.date" t-options="{'widget': 'date', 'format': 'MMMM dd, yyyy'}"/>
+                            </h5>
+                        </div>
+
+                        <!-- Class Info Card -->
+                        <div class="row mb-4 p-3" style="background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 5px;">
+                            <div class="col-7">
+                                <div class="row mb-2">
+                                    <div class="col-4"><strong>Section:</strong></div>
+                                    <div class="col-8"><span t-field="o.section_id.full_name" style="font-size: 1.2em; font-weight: bold;"/></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-4"><strong>Teacher:</strong></div>
+                                    <div class="col-8"><span t-field="o.teacher_id.name"/></div>
+                                </div>
+                            </div>
+                            <div class="col-5 border-start">
+                                <div class="row mb-2 ps-3">
+                                    <div class="col-5"><strong>Date:</strong></div>
+                                    <div class="col-7"><span t-field="o.date"/></div>
+                                </div>
+                                <div class="row ps-3">
+                                    <div class="col-5"><strong>Total Students:</strong></div>
+                                    <div class="col-7"><span t-esc="len(o.line_ids)"/></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Attendance Table -->
+                        <table class="table table-bordered table-sm o_main_table">
+                            <thead class="bg-200 text-center">
+                                <tr>
+                                    <th style="width: 5%">#</th>
+                                    <th style="width: 20%">Student Code</th>
+                                    <th style="width: 40%">Student Name</th>
+                                    <th style="width: 15%">Status</th>
+                                    <th style="width: 20%">Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.line_ids" t-as="line">
+                                    <tr>
+                                        <td class="text-center"><span t-esc="line_index + 1"/></td>
+                                        <td class="text-center"><span t-field="line.student_id.student_code"/></td>
+                                        <td><span t-field="line.student_id.name" style="font-weight: 500;"/></td>
+                                        <td class="text-center">
+                                            <span t-if="line.status == 'present'" class="badge rounded-pill bg-success-light text-success border border-success" style="padding: 4px 10px;">Present</span>
+                                            <span t-if="line.status == 'absent'" class="badge rounded-pill bg-danger-light text-danger border border-danger" style="padding: 4px 10px;">Absent</span>
+                                            <span t-if="line.status == 'late'" class="badge rounded-pill bg-warning-light text-warning border border-warning" style="padding: 4px 10px;">Late</span>
+                                            <span t-if="line.status == 'excused'" class="badge rounded-pill bg-info-light text-info border border-info" style="padding: 4px 10px;">Excused</span>
+                                        </td>
+                                        <td class="fst-italic text-muted small"><span t-field="line.note"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Signature Area -->
+                        <div class="row mt-5">
+                            <div class="col-8">
+                                <!-- We use o.env.context_today() which is safer -->
+                                <div t-if="o.company_id" class="small text-muted">
+                                    Printed by <t t-esc="user_id.name"/> on 
+                                     <span t-esc="datetime.datetime.now().strftime('%B %d, %Y')"/>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center">
+                                <div style="border-top: 1px solid black; margin-top: 40px; padding-top: 5px;">
+                                    <strong>Teacher's Signature</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,17 @@
+<odoo>
+    <menuitem id="menu_school_fees_root"
+              name="Fees"
+              parent="school_core.menu_school_root"
+              sequence="50"
+              groups="school_core.group_school_admin,school_fees.group_school_accountant"/>
+
+    <menuitem id="menu_school_fees_config"
+              name="Configuration"
+              parent="menu_school_fees_root"
+              sequence="10"/>
+
+    <menuitem id="menu_school_fees_operations"
+              name="Operations"
+              parent="menu_school_fees_root"
+              sequence="20"/>
+</odoo>

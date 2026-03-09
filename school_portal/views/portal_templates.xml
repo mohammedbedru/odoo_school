@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- School Portal Home -->
+    <template id="portal_my_school" name="My School Portal">
+        <t t-call="school_portal.portal_layout_school">
+            <div class="school_portal_header text-center">
+                <div class="container">
+                    <h1><i class="fa fa-graduation-cap"/> School Portal</h1>
+                    <p>Welcome to your school portal</p>
+                </div>
+            </div>
+
+            <div class="container">
+                <t t-if="is_student">
+                    <h2 class="mb-4">Student Portal</h2>
+                    <div class="dashboard_cards">
+                        <a href="/my/student/dashboard" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-tachometer"/></div>
+                            <div class="dashboard_card_label">Dashboard</div>
+                        </a>
+                        <a href="/my/student/profile" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-user"/></div>
+                            <div class="dashboard_card_label">My Profile</div>
+                        </a>
+                        <a href="/my/student/timetable" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-calendar"/></div>
+                            <div class="dashboard_card_label">Timetable</div>
+                        </a>
+                        <a href="/my/student/attendance" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-check-circle"/></div>
+                            <div class="dashboard_card_label">Attendance</div>
+                        </a>
+                        <a href="/my/student/marks" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-star"/></div>
+                            <div class="dashboard_card_label">Exam Marks</div>
+                        </a>
+                        <a href="/my/student/report-cards" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-file-text"/></div>
+                            <div class="dashboard_card_label">Report Cards</div>
+                        </a>
+                        <a href="/my/student/fees" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-money"/></div>
+                            <div class="dashboard_card_label">Fees</div>
+                        </a>
+                    </div>
+                </t>
+
+                <t t-if="is_parent">
+                    <h2 class="mb-4">Parent Portal</h2>
+                    <div class="dashboard_cards">
+                        <a href="/my/parent/children" class="dashboard_card text-decoration-none text-center">
+                            <div class="dashboard_card_icon"><i class="fa fa-users"/></div>
+                            <div class="dashboard_card_value"><t t-esc="children_count"/></div>
+                            <div class="dashboard_card_label">My Children</div>
+                        </a>
+                    </div>
+
+                    <h3 class="mt-5 mb-3">Quick Access</h3>
+                    <div class="children_grid">
+                        <t t-foreach="children" t-as="child">
+                            <div class="child_card">
+                                <div class="child_card_header">
+                                    <div class="child_avatar">
+                                        <t t-if="child.photo">
+                                            <img t-att-src="'data:image/png;base64,%s' % child.photo.decode('utf-8')" alt="Student Photo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"/>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-esc="child.name[:1]"/>
+                                        </t>
+                                    </div>
+                                    <div class="child_info">
+                                        <h3><t t-esc="child.name"/></h3>
+                                        <p><t t-esc="child.grade_id.name"/> - <t t-esc="child.section_id.name"/></p>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <a t-attf-href="/my/parent/child/#{child.id}/dashboard" class="btn-portal">
+                                        View Dashboard
+                                    </a>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+
+                <t t-if="not is_student and not is_parent">
+                    <div class="empty_state">
+                        <i class="fa fa-exclamation-circle"/>
+                        <h3>No Portal Access</h3>
+                        <p>You don't have student or parent portal access. Please contact the school administration.</p>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,143 @@
+<odoo>
+    <!-- Main Report Template -->
+    <template id="report_student_fee_statement_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Helvetica', sans-serif;">
+                        
+                        <!-- Header Section: Title and Status Stamp -->
+                        <div class="row mb-4">
+                            <div class="col-8">
+                                <h2 style="font-weight: bold; color: #1a4d80;">STUDENT FEE STATEMENT</h2>
+                                <h5 class="text-muted"><span t-field="o.academic_year_id.name"/> — <span t-field="o.term"/></h5>
+                            </div>
+                            <div class="col-4 text-end">
+                                <!-- Payment Status Stamp -->
+                                <div t-if="o.payment_state" t-attf-class="text-uppercase fw-bold p-3 border border-4 rounded d-inline-block" 
+                                     t-attf-style="opacity: 0.7; transform: rotate(-10deg); border-color: #{'green' if o.payment_state == 'paid' else 'orange' if o.payment_state == 'partial' else 'red'}; color: #{'green' if o.payment_state == 'paid' else 'orange' if o.payment_state == 'partial' else 'red'};">
+                                    <span t-field="o.payment_state"/>
+                                </div>
+                                <div t-else="" class="text-uppercase fw-bold p-3 border border-4 border-secondary text-secondary rounded d-inline-block" style="opacity: 0.5;">
+                                    UNINVOICED
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Student Information Box -->
+                        <div class="row mb-4 bg-light p-3 border rounded">
+                            <div class="col-6">
+                                <div class="row">
+                                    <div class="col-5"><strong>Student:</strong></div>
+                                    <div class="col-7"><span t-field="o.student_id.name" class="fw-bold"/></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-5"><strong>Student Code:</strong></div>
+                                    <div class="col-7"><span t-field="o.student_id.student_code"/></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-5"><strong>Grade/Section:</strong></div>
+                                    <div class="col-7"><span t-field="o.student_id.section_id.full_name"/></div>
+                                </div>
+                            </div>
+                            <div class="col-6 border-start ps-4">
+                                <div class="row">
+                                    <div class="col-5"><strong>Date:</strong></div>
+                                    <div class="col-7"><span t-esc="datetime.datetime.now().strftime('%B %d, %Y')"/></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-5"><strong>Invoice Ref:</strong></div>
+                                    <div class="col-7">
+                                        <span t-if="o.invoice_id" t-field="o.invoice_id.name"/>
+                                        <span t-else="" class="text-muted fst-italic">Pending</span>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-5"><strong>Fee Structure:</strong></div>
+                                    <div class="col-7"><span t-field="o.structure_id.name"/></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Fee Details Table -->
+                        <h4 class="mb-3" style="border-bottom: 2px solid #1a4d80; padding-bottom: 5px;">BREAKDOWN OF CHARGES</h4>
+                        <table class="table table-bordered o_main_table">
+                            <thead class="text-center" style="background-color: #1a4d80; color: white;">
+                                <tr>
+<th class="text-start" style="color: white !important;">Description</th>
+                                    <th style="width: 15%; color: white !important;">Quantity</th>
+                                    <th style="width: 25%; color: white !important;">Unit Amount</th>
+                                    <th style="width: 25%; color: white !important;">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.structure_id.line_ids" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.product_id.name"/></td>
+                                        <td class="text-center">1</td>
+                                        <td class="text-end">
+                                            <span t-field="line.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="line.amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- Totals Section -->
+                        <div class="row justify-content-end mt-4">
+                            <div class="col-5">
+                                <table class="table table-sm">
+                                    <tr class="border-top border-dark">
+                                        <td class="p-2"><strong>Gross Total</strong></td>
+                                        <td class="text-end p-2"><span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></td>
+                                    </tr>
+                                    <tr t-if="o.invoice_id and o.invoice_id.amount_residual &gt; 0">
+                                        <td class="p-2"><strong>Amount Paid</strong></td>
+                                        <td class="text-end p-2 text-success">
+                                            - <span t-esc="o.amount_total - o.invoice_id.amount_residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                    <tr style="background-color: #eef4fb; font-size: 1.3em;">
+                                        <td class="p-2"><strong>Balance Due</strong></td>
+                                        <td class="text-end p-2 fw-bold" style="color: #1a4d80;">
+                                            <span t-if="o.invoice_id" t-field="o.invoice_id.amount_residual" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            <span t-else="" t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Footer / Notice Section -->
+                        <div class="mt-5 p-3 border rounded bg-light small">
+                            <strong>Note:</strong> 
+                            Please quote the Invoice Reference or Student Code when making payments. 
+                            Payments can be made at the School Accounts Office or via bank transfer. 
+                            Cheques should be payable to <strong><span t-field="o.company_id.name"/></strong>.
+                        </div>
+
+                        <!-- Signatures -->
+                        <div class="row mt-5">
+                            <div class="col-4 text-center">
+                                <div style="border-top: 1px solid black; margin-top: 40px; padding-top: 5px;">
+                                    <strong>Prepared By</strong>
+                                </div>
+                            </div>
+                            <div class="col-4"></div>
+                            <div class="col-4 text-center">
+                                <div style="border-top: 1px solid black; margin-top: 40px; padding-top: 5px;">
+                                    <strong>Accountant's Signature</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

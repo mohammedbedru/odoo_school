@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add School Portal Category -->
+    <template id="portal_my_home_menu_school" name="Portal My Home Menu - School" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[@id='portal_common_category']" position="before">
+            <div t-if="is_student or is_parent" class="o_portal_category row g-2 mt-3" id="portal_school_category">
+                <!-- Student Dashboard -->
+                <t t-if="is_student">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">My Dashboard</t>
+                        <t t-set="text">View academic progress</t>
+                        <t t-set="url" t-value="'/my/student/dashboard'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Attendance</t>
+                        <t t-set="text">View attendance records</t>
+                        <t t-set="url" t-value="'/my/student/attendance'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Exam Marks</t>
+                        <t t-set="text">View exam results</t>
+                        <t t-set="url" t-value="'/my/student/marks'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Report Cards</t>
+                        <t t-set="count" t-value="report_card_count"/>
+                        <t t-set="text">report cards</t>
+                        <t t-set="url" t-value="'/my/student/report-cards'"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Fees</t>
+                        <t t-set="text">View fee status</t>
+                        <t t-set="url" t-value="'/my/student/fees'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">Timetable</t>
+                        <t t-set="text">View class schedule</t>
+                        <t t-set="url" t-value="'/my/student/timetable'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                </t>
+                
+                <!-- Parent Portal -->
+                <t t-if="is_parent">
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="title">My Children</t>
+                        <t t-set="count" t-value="children_count"/>
+                        <t t-set="text">children</t>
+                        <t t-set="url" t-value="'/my/parent/children'"/>
+                    </t>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Portal Layout with School Menu -->
+    <template id="portal_layout_school" name="Portal Layout - School">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">School Portal</t>
+            <div class="container school_portal_container">
+                <t t-raw="0"/>
+            </div>
+        </t>
+    </template>
+</odoo>

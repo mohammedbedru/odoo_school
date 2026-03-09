@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Student Form View to Add Portal Access -->
+    <record id="view_school_student_form_portal" model="ir.ui.view">
+        <field name="name">school.student.form.portal</field>
+        <field name="model">school.student</field>
+        <field name="inherit_id" ref="school_core.view_school_student_form"/>
+        <field name="arch" type="xml">
+            <!-- Add buttons in header -->
+            <xpath expr="//header" position="inside">
+                <button name="action_grant_portal_access" 
+                        type="object" 
+                        string="Grant Portal Access" 
+                        class="btn-primary"
+                        invisible="user_id"
+                        groups="school_core.group_school_admin,school_core.group_school_registrar"/>
+                <button name="action_revoke_portal_access" 
+                        type="object" 
+                        string="Revoke Portal Access" 
+                        class="btn-secondary"
+                        invisible="not user_id"
+                        groups="school_core.group_school_admin,school_core.group_school_registrar"/>
+            </xpath>
+            
+            <!-- Add Portal Access tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Portal Access" name="portal_access" groups="school_core.group_school_admin,school_core.group_school_registrar">
+                    <group>
+                        <field name="user_id" readonly="1"/>
+                    </group>
+                    <div class="alert alert-info" role="alert" invisible="user_id">
+                        <p><i class="fa fa-info-circle"/> This student doesn't have portal access yet.</p>
+                        <p>Click "Grant Portal Access" button to create a portal account.</p>
+                    </div>
+                    <div class="alert alert-success" role="alert" invisible="not user_id">
+                        <p><i class="fa fa-check-circle"/> Portal access granted</p>
+                        <p>Login: <field name="user_id" readonly="1" options="{'no_open': True}" nolabel="1"/></p>
+                        <p>The student can login at: <strong>/web/login</strong></p>
+                    </div>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

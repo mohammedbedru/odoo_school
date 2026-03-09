@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- API Key list View -->
+    <record id="view_school_api_key_list" model="ir.ui.view">
+        <field name="name">school.api.key.list</field>
+        <field name="model">school.api.key</field>
+        <field name="arch" type="xml">
+            <list string="API Keys">
+                <field name="name"/>
+                <field name="key" optional="hide"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="usage_count"/>
+                <field name="last_used"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- API Key Form View -->
+    <record id="view_school_api_key_form" model="ir.ui.view">
+        <field name="name">school.api.key.form</field>
+        <field name="model">school.api.key</field>
+        <field name="arch" type="xml">
+            <form string="API Key">
+                <header>
+                    <button name="action_regenerate_key" string="Regenerate Key" type="object" 
+                            class="btn-warning" confirm="This will invalidate the current key. Continue?"/>
+                    <button name="action_deactivate" string="Deactivate" type="object" 
+                            class="btn-danger" invisible="not active"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="key" readonly="1" 
+                                   placeholder="API key will be auto-generated on save"/> <!--widget="password_toggle"-->
+                        </group>
+                        <group>
+                            <field name="usage_count"/>
+                            <field name="last_used"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Description of what this API key is used for..."/>
+                    </group>
+                    <div class="alert alert-info" role="alert" invisible="key">
+                        <strong>Note:</strong> The API key will be automatically generated when you save this record.
+                    </div>
+                    <div class="alert alert-success" role="alert" invisible="not key">
+                        <strong>API Key Generated!</strong> Click the eye icon to reveal it, or the clipboard icon to copy.
+                    </div>
+                    <group string="Permissions (Future)">
+                        <field name="allowed_endpoints" placeholder="e.g., /api/v1/student/*, /api/v1/fees/*"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- API Key Action -->
+    <record id="action_school_api_key" model="ir.actions.act_window">
+        <field name="name">API Keys</field>
+        <field name="res_model">school.api.key</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first API Key
+            </p>
+            <p>
+                API keys allow external applications to securely access your school data.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_school_api_root"
+              name="API Management"
+              parent="school_core.menu_school_root"
+              sequence="100"/>
+    
+    <menuitem id="menu_school_api_keys"
+              name="API Keys"
+              parent="menu_school_api_root"
+              action="action_school_api_key"
+              sequence="10"/>
+</odoo>

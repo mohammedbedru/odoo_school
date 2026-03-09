@@ -1,0 +1,38 @@
+<odoo>
+    <record id="view_bulk_invoice_wizard_form" model="ir.ui.view">
+        <field name="name">school.bulk.invoice.wizard.form</field>
+        <field name="model">school.bulk.invoice.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Bulk Invoices">
+                <group>
+                    <field name="academic_year_id"/>
+                    <field name="grade_id"/>
+                    <field name="section_id"/>
+                    <field name="term"/>
+                    <field name="structure_id"/>
+                </group>
+
+                <footer>
+                    <button name="action_generate_bulk_invoices"
+                            type="object"
+                            string="Generate"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bulk_invoice_wizard" model="ir.actions.act_window">
+        <field name="name">Bulk Invoice Generator</field>
+        <field name="res_model">school.bulk.invoice.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_bulk_invoice_wizard"
+              name="Bulk Invoice Generator"
+              parent="school_fees.menu_school_fees_operations"
+              action="action_bulk_invoice_wizard"
+              sequence="20"/>
+</odoo>

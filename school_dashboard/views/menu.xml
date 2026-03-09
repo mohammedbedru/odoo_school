@@ -1,0 +1,87 @@
+<odoo>
+    <!-- Main Dashboard Menu -->
+    <menuitem id="menu_school_dashboard_root"
+              name="Dashboard"
+              parent="school_core.menu_school_root"
+              sequence="1"/>
+
+    <!-- Main Dashboard (OWL) -->
+    <menuitem id="menu_school_dashboard_main"
+              name="Main Dashboard"
+              parent="menu_school_dashboard_root"
+              action="action_school_dashboard_owl"
+              sequence="1"/>
+
+    <!-- Classic Dashboard -->
+    <menuitem id="menu_school_dashboard_classic"
+              name="Classic Dashboard"
+              parent="menu_school_dashboard_root"
+              action="action_school_dashboard"
+              sequence="2"/>
+
+    <!-- Student Analytics Menu -->
+    <menuitem id="menu_student_analytics_root"
+              name="Student Analytics"
+              parent="menu_school_dashboard_root"
+              sequence="10"/>
+
+    <menuitem id="menu_student_analytics"
+              name="Student Distribution"
+              parent="menu_student_analytics_root"
+              action="action_student_analytics"
+              sequence="1"/>
+
+    <menuitem id="menu_grade_analytics"
+              name="Grade Analytics"
+              parent="menu_student_analytics_root"
+              action="action_grade_analytics"
+              sequence="2"/>
+
+    <!-- Fee Analytics Menu -->
+    <menuitem id="menu_fee_analytics_root"
+              name="Fee Analytics"
+              parent="menu_school_dashboard_root"
+              sequence="20"/>
+
+    <menuitem id="menu_fee_analytics"
+              name="Fee Collection"
+              parent="menu_fee_analytics_root"
+              action="action_fee_analytics"
+              sequence="1"/>
+
+    <menuitem id="menu_monthly_fee_collection"
+              name="Monthly Collection"
+              parent="menu_fee_analytics_root"
+              action="action_monthly_fee_collection"
+              sequence="2"/>
+
+    <menuitem id="menu_fee_defaulter"
+              name="Fee Defaulters"
+              parent="menu_fee_analytics_root"
+              action="action_fee_defaulter"
+              sequence="3"/>
+
+    <!-- Academic Analytics Menu -->
+    <menuitem id="menu_academic_analytics_root"
+              name="Academic Analytics"
+              parent="menu_school_dashboard_root"
+              sequence="30"/>
+
+    <menuitem id="menu_academic_analytics"
+              name="Performance Analytics"
+              parent="menu_academic_analytics_root"
+              action="action_academic_analytics"
+              sequence="1"/>
+
+    <menuitem id="menu_subject_performance"
+              name="Subject Performance"
+              parent="menu_academic_analytics_root"
+              action="action_subject_performance"
+              sequence="2"/>
+
+    <menuitem id="menu_attendance_analytics"
+              name="Attendance Analytics"
+              parent="menu_academic_analytics_root"
+              action="action_attendance_analytics"
+              sequence="3"/>
+</odoo>

@@ -1,0 +1,26 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_school_student_admin,school.student admin,model_school_student,school_core.group_school_admin,1,1,1,1
+access_school_student_registrar,school.student registrar,model_school_student,school_core.group_school_registrar,1,1,1,0
+access_school_student_teacher,school.student teacher,model_school_student,school_core.group_school_teacher,1,0,0,0
+
+access_school_parent_admin,school.parent admin,model_school_parent,school_core.group_school_admin,1,1,1,1
+access_school_parent_registrar,school.parent registrar,model_school_parent,school_core.group_school_registrar,1,1,1,0
+access_school_parent_teacher,school.parent teacher,model_school_parent,school_core.group_school_teacher,1,0,0,0
+
+access_school_teacher_admin,school.teacher admin,model_school_teacher,school_core.group_school_admin,1,1,1,1
+access_school_teacher_registrar,school.teacher registrar,model_school_teacher,school_core.group_school_registrar,1,1,1,0
+
+access_school_grade_admin,school.grade admin,model_school_grade,school_core.group_school_admin,1,1,1,1
+access_school_grade_registrar,school.grade registrar,model_school_grade,school_core.group_school_registrar,1,1,1,0
+
+access_school_section_admin,school.section admin,model_school_section,school_core.group_school_admin,1,1,1,1
+access_school_section_registrar,school.section registrar,model_school_section,school_core.group_school_registrar,1,1,1,0
+
+access_school_subject_admin,school.subject admin,model_school_subject,school_core.group_school_admin,1,1,1,1
+access_school_subject_registrar,school.subject registrar,model_school_subject,school_core.group_school_registrar,1,1,1,0
+
+access_school_subject_assignment_admin,school.subject.assignment admin,model_school_subject_assignment,school_core.group_school_admin,1,1,1,1
+access_school_subject_assignment_registrar,school.subject.assignment registrar,model_school_subject_assignment,school_core.group_school_registrar,1,1,1,0
+
+access_school_academic_year_admin,school.academic.year admin,model_school_academic_year,school_core.group_school_admin,1,1,1,1
+access_school_academic_year_registrar,school.academic.year registrar,model_school_academic_year,school_core.group_school_registrar,1,1,1,0

@@ -1,0 +1,201 @@
+<odoo>
+    <!-- Fee Analytics List View -->
+    <record id="view_fee_analytics_list" model="ir.ui.view">
+        <field name="name">school.fee.analytics.list</field>
+        <field name="model">school.fee.analytics</field>
+        <field name="arch" type="xml">
+            <list string="Fee Analytics" create="false" edit="false" delete="false">
+                <field name="academic_year_id"/>
+                <field name="term"/>
+                <field name="grade_id"/>
+                <field name="student_count"/>
+                <field name="total_amount" widget="monetary"/>
+                <field name="collected_amount" widget="monetary"/>
+                <field name="pending_amount" widget="monetary"/>
+                <field name="overdue_amount" widget="monetary"/>
+                <field name="collection_rate" widget="percentage"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Fee Analytics Graph View -->
+    <record id="view_fee_analytics_graph" model="ir.ui.view">
+        <field name="name">school.fee.analytics.graph</field>
+        <field name="model">school.fee.analytics</field>
+        <field name="arch" type="xml">
+            <graph string="Fee Collection Analytics" type="bar" stacked="True">
+                <field name="grade_id"/>
+                <field name="collected_amount" type="measure"/>
+                <field name="pending_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Fee Analytics Pivot View -->
+    <record id="view_fee_analytics_pivot" model="ir.ui.view">
+        <field name="name">school.fee.analytics.pivot</field>
+        <field name="model">school.fee.analytics</field>
+        <field name="arch" type="xml">
+            <pivot string="Fee Analytics">
+                <field name="academic_year_id" type="row"/>
+                <field name="term" type="row"/>
+                <field name="grade_id" type="col"/>
+                <field name="total_amount" type="measure"/>
+                <field name="collected_amount" type="measure"/>
+                <field name="pending_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Fee Analytics Action -->
+    <record id="action_fee_analytics" model="ir.actions.act_window">
+        <field name="name">Fee Analytics</field>
+        <field name="res_model">school.fee.analytics</field>
+        <field name="view_mode">graph,pivot,list</field>
+    </record>
+
+    <!-- Monthly Fee Collection Form View -->
+    <record id="view_monthly_fee_collection_form" model="ir.ui.view">
+        <field name="name">school.monthly.fee.collection.form</field>
+        <field name="model">school.monthly.fee.collection</field>
+        <field name="arch" type="xml">
+            <form string="Monthly Fee Collection">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="month"/>
+                            <field name="year"/>
+                        </group>
+                    </group>
+
+                    <group string="Collection Summary">
+                        <group>
+                            <field name="total_collected" widget="monetary"/>
+                            <field name="total_invoices"/>
+                        </group>
+                        <group>
+                            <field name="paid_invoices"/>
+                            <field name="pending_invoices"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Monthly Fee Collection List View -->
+    <record id="view_monthly_fee_collection_list" model="ir.ui.view">
+        <field name="name">school.monthly.fee.collection.list</field>
+        <field name="model">school.monthly.fee.collection</field>
+        <field name="arch" type="xml">
+            <list string="Monthly Fee Collection">
+                <field name="month"/>
+                <field name="year"/>
+                <field name="total_collected" widget="monetary" sum="Total"/>
+                <field name="total_invoices" sum="Total"/>
+                <field name="paid_invoices" sum="Total"/>
+                <field name="pending_invoices" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Monthly Fee Collection Graph View -->
+    <record id="view_monthly_fee_collection_graph" model="ir.ui.view">
+        <field name="name">school.monthly.fee.collection.graph</field>
+        <field name="model">school.monthly.fee.collection</field>
+        <field name="arch" type="xml">
+            <graph string="Monthly Collection Trend" type="line">
+                <field name="month"/>
+                <field name="total_collected" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Monthly Fee Collection Action -->
+    <record id="action_monthly_fee_collection" model="ir.actions.act_window">
+        <field name="name">Monthly Fee Collection</field>
+        <field name="res_model">school.monthly.fee.collection</field>
+        <field name="view_mode">graph,list,form</field>
+    </record>
+
+    <!-- Fee Defaulter List View -->
+    <record id="view_fee_defaulter_list" model="ir.ui.view">
+        <field name="name">school.fee.defaulter.list</field>
+        <field name="model">school.fee.defaulter</field>
+        <field name="arch" type="xml">
+            <list string="Fee Defaulters" decoration-danger="days_overdue &gt; 30" decoration-warning="days_overdue &gt; 15">
+                <field name="student_id"/>
+                <field name="grade_id"/>
+                <field name="section_id"/>
+                <field name="total_due" widget="monetary"/>
+                <field name="overdue_fees"/>
+                <field name="days_overdue"/>
+                <field name="last_payment_date"/>
+                <field name="contact_phone"/>
+                <field name="contact_email"/>
+                <button name="action_send_reminder" type="object" string="Send Reminder" class="btn-warning" icon="fa-envelope"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Fee Defaulter Form View -->
+    <record id="view_fee_defaulter_form" model="ir.ui.view">
+        <field name="name">school.fee.defaulter.form</field>
+        <field name="model">school.fee.defaulter</field>
+        <field name="arch" type="xml">
+            <form string="Fee Defaulter">
+                <header>
+                    <button name="action_send_reminder" type="object" string="Send Reminder" class="btn-warning"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="student_id"/>
+                            <field name="grade_id"/>
+                            <field name="section_id"/>
+                        </group>
+                        <group>
+                            <field name="total_due" widget="monetary"/>
+                            <field name="overdue_fees"/>
+                            <field name="days_overdue"/>
+                            <field name="last_payment_date"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Contact Information">
+                        <group>
+                            <field name="contact_phone"/>
+                            <field name="contact_email"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Fee Defaulter Graph View -->
+    <record id="view_fee_defaulter_graph" model="ir.ui.view">
+        <field name="name">school.fee.defaulter.graph</field>
+        <field name="model">school.fee.defaulter</field>
+        <field name="arch" type="xml">
+            <graph string="Defaulters by Grade" type="bar">
+                <field name="grade_id"/>
+                <field name="total_due" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Fee Defaulter Action -->
+    <record id="action_fee_defaulter" model="ir.actions.act_window">
+        <field name="name">Fee Defaulters</field>
+        <field name="res_model">school.fee.defaulter</field>
+        <field name="view_mode">list,form,graph</field>
+    </record>
+</odoo>

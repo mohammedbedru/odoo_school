@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bulk Grade Report Wizard Form -->
+    <record id="view_bulk_grade_report_wizard_form" model="ir.ui.view">
+        <field name="name">school.bulk.grade.report.wizard.form</field>
+        <field name="model">school.bulk.grade.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Bulk Grade Report">
+                <group>
+                    <group>
+                        <field name="academic_year_id" options="{'no_create': True}"/>
+                        <field name="grade_id" options="{'no_create': True}"/>
+                        <field name="section_id" options="{'no_create': True}"/>
+                    </group>
+                    <group>
+                        <field name="term"/>
+                    </group>
+                </group>
+                
+                <group string="Select Subjects">
+                    <field name="subject_ids" nolabel="1" widget="many2many_tags" options="{'no_create': True}"/>
+                </group>
+                
+                <footer>
+                    <button name="action_print_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Wizard Action -->
+    <record id="action_bulk_grade_report_wizard" model="ir.actions.act_window">
+        <field name="name">Bulk Grade Report</field>
+        <field name="res_model">school.bulk.grade.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="school_core.model_school_student"/>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem
+        id="menu_bulk_grade_report"
+        name="Bulk Grade Report"
+        parent="menu_school_academic_reports"
+        action="action_bulk_grade_report_wizard"
+        sequence="10"/>
+</odoo>

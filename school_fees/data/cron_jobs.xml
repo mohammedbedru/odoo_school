@@ -1,0 +1,25 @@
+<odoo>
+    <!-- Cron Job: Apply Late Fees -->
+    <record id="cron_apply_late_fees" model="ir.cron">
+        <field name="name">School Fees: Apply Late Fees</field>
+        <field name="model_id" ref="model_school_student_fee"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_apply_late_fees()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=2, minute=0, second=0)"/>
+    </record>
+
+    <!-- Cron Job: Send Payment Reminders -->
+    <record id="cron_send_payment_reminders" model="ir.cron">
+        <field name="name">School Fees: Send Payment Reminders</field>
+        <field name="model_id" ref="model_school_student_fee"/>
+        <field name="state">code</field>
+        <field name="code">model.cron_send_payment_reminders()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+        <field name="nextcall" eval="(DateTime.now() + timedelta(days=1)).replace(hour=8, minute=0, second=0)"/>
+    </record>
+</odoo>

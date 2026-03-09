@@ -1,0 +1,101 @@
+<odoo>
+    <!-- Dashboard Summary Report -->
+    <record id="action_report_dashboard_summary" model="ir.actions.report">
+        <field name="name">Dashboard Summary</field>
+        <field name="model">school.dashboard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">school_dashboard.report_dashboard_summary</field>
+        <field name="report_file">school_dashboard.report_dashboard_summary</field>
+        <field name="binding_model_id" ref="model_school_dashboard"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_dashboard_summary">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>School Dashboard Summary</h2>
+                        <p>Generated on: <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')"/></p>
+
+                        <h3>Student Statistics</h3>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Total Students:</td>
+                                <td><strong><span t-field="o.total_students"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Active Students:</td>
+                                <td><strong><span t-field="o.active_students"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>New Admissions (This Month):</td>
+                                <td><strong><span t-field="o.new_admissions_month"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Male Students:</td>
+                                <td><strong><span t-field="o.male_students"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Female Students:</td>
+                                <td><strong><span t-field="o.female_students"/></strong></td>
+                            </tr>
+                        </table>
+
+                        <h3>Fee Collection Statistics</h3>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Total Fees Collected:</td>
+                                <td><strong><span t-field="o.total_fees_collected" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Total Fees Pending:</td>
+                                <td><strong><span t-field="o.total_fees_pending" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Fees Collected (This Month):</td>
+                                <td><strong><span t-field="o.fees_collected_month" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Overdue Fees:</td>
+                                <td><strong><span t-field="o.overdue_fees" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Collection Rate:</td>
+                                <td><strong><span t-esc="'%.2f' % o.collection_rate"/>%</strong></td>
+                            </tr>
+                        </table>
+
+                        <h3>Academic Statistics</h3>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Total Exams:</td>
+                                <td><strong><span t-field="o.total_exams"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Exams This Month:</td>
+                                <td><strong><span t-field="o.exams_this_month"/></strong></td>
+                            </tr>
+                            <tr>
+                                <td>Average Attendance Rate:</td>
+                                <td><strong><span t-esc="'%.2f' % o.average_attendance_rate"/>%</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Total Classes:</td>
+                                <td><strong><span t-field="o.total_classes"/></strong></td>
+                            </tr>
+                        </table>
+
+                        <h3>Staff Statistics</h3>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>Total Teachers:</td>
+                                <td><strong><span t-field="o.total_teachers"/></strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

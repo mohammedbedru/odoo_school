@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add School Portal Category -->
+    <template id="portal_my_home_menu_school" name="Portal My Home Menu - School" inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[@id='portal_common_category']" position="before">
+            <div t-if="is_student or is_parent" class="o_portal_category row g-2 mt-3" id="portal_school_category">
+                <!-- Student Dashboard -->
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">School Portal</t>
+                    <t t-set="text">School Portal</t>
+                    <t t-set="url" t-value="'/my/school'"/>
+                    <t t-set="config_card" t-value="True"/>
+                </t>  
+            </div>
+        </xpath>
+    </template>
+
+    <!-- School Portal Breadcrumbs -->
+    <template id="school_portal_breadcrumbs" name="School Portal Breadcrumbs" inherit_id="portal.portal_breadcrumbs" priority="50">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- School Portal Home - show as active when on /my/school, as link when on sub-pages -->
+            <li t-if="page_name in ['school_portal_home', 'student_profile', 'student_dashboard', 'student_timetable', 'student_attendance', 'student_marks', 'student_report_cards', 'student_fees', 'parent_children', 'parent_child_dashboard', 'parent_child_attendance', 'parent_child_marks', 'parent_child_report_cards', 'parent_child_fees']" 
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'school_portal_home' else ''}">
+                <a t-if="page_name != 'school_portal_home'" href="/my/school">School Portal</a>
+                <t t-else="">School Portal</t>
+            </li>
+            
+            <!-- Student Portal Pages -->
+            <li t-if="page_name == 'student_profile'" class="breadcrumb-item active">My Profile</li>
+            <li t-if="page_name == 'student_dashboard'" class="breadcrumb-item active">Dashboard</li>
+            <li t-if="page_name == 'student_timetable'" class="breadcrumb-item active">Timetable</li>
+            <li t-if="page_name == 'student_attendance'" class="breadcrumb-item active">Attendance</li>
+            <li t-if="page_name == 'student_marks'" class="breadcrumb-item active">Exam Marks</li>
+            <li t-if="page_name == 'student_report_cards'" class="breadcrumb-item active">Report Cards</li>
+            <li t-if="page_name == 'student_fees'" class="breadcrumb-item active">Fees</li>
+            
+            <!-- Parent Portal - My Children link -->
+            <li t-if="page_name in ['parent_children', 'parent_child_dashboard', 'parent_child_attendance', 'parent_child_marks', 'parent_child_report_cards', 'parent_child_fees']" 
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'parent_children' else ''}">
+                <a t-if="page_name != 'parent_children'" href="/my/parent/children">My Children</a>
+                <t t-else="">My Children</t>
+            </li>
+            
+            <!-- Parent Portal - Child Name link -->
+            <li t-if="page_name in ['parent_child_dashboard', 'parent_child_attendance', 'parent_child_marks', 'parent_child_report_cards', 'parent_child_fees'] and child" 
+                t-attf-class="breadcrumb-item #{'active' if page_name == 'parent_child_dashboard' else ''}">
+                <a t-if="page_name != 'parent_child_dashboard'" t-attf-href="/my/parent/child/#{child.id}/dashboard" t-esc="child.name"/>
+                <t t-else="" t-esc="child.name"/>
+            </li>
+            
+            <!-- Parent Portal - Child Sub-pages -->
+            <li t-if="page_name == 'parent_child_attendance'" class="breadcrumb-item active">Attendance</li>
+            <li t-if="page_name == 'parent_child_marks'" class="breadcrumb-item active">Exam Marks</li>
+            <li t-if="page_name == 'parent_child_report_cards'" class="breadcrumb-item active">Report Cards</li>
+            <li t-if="page_name == 'parent_child_fees'" class="breadcrumb-item active">Fees</li>
+        </xpath>
+    </template>
+
+    <!-- Portal Layout with School Menu -->
+    <template id="portal_layout_school" name="Portal Layout - School">
+        <t t-call="portal.portal_layout">
+            <t t-set="additional_title">School Portal</t>
+            <div class="container school_portal_container">
+                <t t-raw="0"/>
+            </div>
+        </t>
+    </template>
+</odoo>
